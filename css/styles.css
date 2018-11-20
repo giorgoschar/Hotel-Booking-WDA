@@ -1,0 +1,73 @@
+body{
+    font-size:16px;
+}
+.navbar-brand {
+    font-size:155%;
+    font-weight: bold
+}
+.navbar-brand small {
+  display:block;
+  font-size:12px;
+
+}
+.custom-toggler .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.navbar-light .navbar-toggler {
+    color:rgba(255,0,0,0.8);
+}
+
+.mid {
+    border-right: 1px solid;
+}
+
+@media only screen and (max-width: 800px) {
+    .mid{
+        border-right:0px;
+    }
+    #roomSearch {
+        width:auto;
+    }
+    .vertical-center {
+        width:auto;
+    }
+    #roomSearch input[type="submit"] {
+        width:auto;
+    }
+    .myh{
+        visibility: hidden;
+    }
+}
+.ui-datepicker {
+   background: white;
+   border: 1px solid #dc3545;
+   color: #dc3545;
+
+}
+.ui-state-active, .ui-widget-content .ui-state-active {
+    background: #dc3545;
+    color:#ffffff;
+}
+.ui-state-default, .ui-widget-content .ui-state-default{
+    color: #dc3545;
+    background:transparent;
+}
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight{
+    background: #dc3545;
+    color:#ffffff;
+}
+.ui-widget-header{
+    background: transparent;
+    border-top:transparent;
+    border-left:transparent;
+    border-right:transparent;
+    border-bottom:1px ridge  #dc3545;
+    border-radius: 0px;
+}
+.ui-datepicker-month{
+    color:#dc3545;
+}
+.ui-datepicker-year{
+    color:#dc3545;
+}

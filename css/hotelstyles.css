@@ -1,0 +1,91 @@
+.ptitl {
+    font-weight: 500;
+    font-size: 1.3em;
+    color: #dc3545;
+}
+.sidenav{
+    border-right:1px solid #dc3545;
+    position:relative;
+    top:2%;
+    height:100%;
+}
+.sel1{
+    width:70%;
+}
+.p1{
+    width:96%;
+}
+#priceRange{
+    width:90%;
+}
+.p2 {
+    position:relative;
+    top:10%;
+}
+a:hover{
+    text-decoration: none;
+    
+}
+.customA{
+    border-color:#dc3545;
+    color: #dc3545;
+}
+.customA:hover {
+    color:#dc3545;
+}
+.cheader {
+    width:20%;
+    height:15vh;
+    background-color:#ffffff;
+    position:relative;
+    
+    border-right:1px solid #dc3545;
+    border-spacing:20px;
+}
+
+.img{
+    position:absolute;
+    left:0%;
+    top:0%;
+    width:100%;
+    height:100%;
+}
+.cbody {
+    width:50%;
+    position:Relative;
+    left:1%;
+    padding:2%;
+    
+}
+.card{
+    position:relative;
+    top:2.2%;
+    border:1px solid #dc3545;
+}
+.card-footer{
+    height:10%;
+}
+.p3 {
+    font-size:1.10em;
+    color: #dc3545;
+    font-weight:600;
+}
+.customB{ 
+    color:#dc3545;
+}
+.customB:hover {
+    color:#dc3545;
+    text-decoration:underline;
+}
+.customC{
+    color:#dc3545;
+    float:right;
+    width:auto;
+    border:1px solid #dc3545;
+    border-radius:5px;
+    padding:1%
+}
+.customC:hover {
+    color:#dc3545;
+    text-decoration:none;
+}
