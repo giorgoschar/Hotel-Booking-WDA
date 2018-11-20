@@ -35,9 +35,13 @@ body{
     #roomSearch input[type="submit"] {
         width:auto;
     }
-    .myh{
-        visibility: hidden;
+    .p4 { 
+        width:auto;
     }
+    .p3{
+        width:auto;
+    }
+    
 }
 .ui-datepicker {
    background: white;

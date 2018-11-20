@@ -35,6 +35,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js" crossorigin="anonymous"></script>
         <!--- Local Scripts --->
         <link rel="stylesheet" href="/css/styles.css">
+        <script src="/js/hotelscript.js"></script>
         <link rel="stylesheet" href="/css/hotelstyles.css">
         <script src="js/script.js"></script>
 
@@ -70,8 +71,8 @@
                 </ul>
             </div>  
         </nav>
-        <div class="container">
-           <h4 class="myh text-center">RESULTS</h4>
+        <div class="container myh">
+           <h4 class="text-center">RESULTS</h4>
             <div class="row">
                 <div class="col-sm-3">
                   <div class="collapseIcon text-left">
@@ -102,10 +103,10 @@
                                 <?php 
                                 foreach ($uniqueRes as $uniRes) {
                                     if(!empty($_GET["city"]) && ($_GET["city"] == $uniRes[0])){
-                                         printf("<label><input type=\"radio\" name=\"optradiocity\" checked>&nbsp;$uniRes[0]</label><br>");
+                                         printf("<label><input type=\"radio\" class=\"radiocity\" name=\"optradiocity\" value=\"$uniRes[0]\"checked>&nbsp;$uniRes[0]</label><br>");
                                        }
                                 else {
-                                    printf("<label><input type=\"radio\" name=\"optradiocity\" >&nbsp;$uniRes[0]</label><br>");
+                                    printf("<label><input type=\"radio\" class=\"radiocity\"  name=\"optradiocity\" value=\"$uniRes[0]\" >&nbsp;$uniRes[0]</label><br>");
                                        }
                                 }
                                 
@@ -116,9 +117,9 @@
                                    <?php 
                                 foreach($result as $uniRoomType) {
                                     if(!empty($_GET["roomtype"]) && ($_GET["roomtype"] == $uniRoomType[0])) {
-                                        printf("<label><input type=\"checkbox\" name=\"roomselect\" checked>&nbsp; $uniRoomType[1]</label> <br>");
+                                        printf("<label><input type=\"checkbox\" class=\"roomselect\" name=\"roomselect\" value=\"$uniRoomType[0]\" checked>&nbsp; $uniRoomType[1]</label> <br>");
                                     } else {
-                                        printf("<label><input type=\"checkbox\" name=\"roomselect\">&nbsp; $uniRoomType[1]</label> <br>");
+                                        printf("<label><input type=\"checkbox\" class=\"roomselect\" name=\"roomselect\" value=\"$uniRoomType[0]\">&nbsp; $uniRoomType[1]</label> <br>");
                                     }
                             }?>
                             </fieldset><hr>
@@ -138,80 +139,84 @@
                                           if(empty($_GET["checkout"])) {
                                                 
                                                 printf("<label for=\"checkout\">Check-Out</label><br>
-                                                 <input placeholder=\"Check-Out Date\" name=\"checkout\" autocomplete=\"off\" type=\"text\" id=\"datepicker\"><br>");
+                                                 <input placeholder=\"Check-Out Date\" name=\"checkout\" autocomplete=\"off\" type=\"text\" id=\"datepicker1\"><br>");
                                             } else {
                                                 $checkout = $_GET["checkout"];
                                                 printf("<label for=\"checkout\">Check-Out</label><br>
-                                                 <input value=\"$checkout\" name=\"checkout\" autocomplete=\"off\" type=\"text\" id=\"datepicker\"><br>");
+                                                 <input value=\"$checkout\" name=\"checkout\" autocomplete=\"off\" type=\"text\" id=\"datepicker1\"><br>");
                                                 
                                             }
                                 ?>
                                 </fieldset><hr>
                 <?php
-                    $roomTypeBool = FALSE;
-                    $cityBool = FALSE;
-                    $checkin = $_GET['checkin'];
-                    $checkout = $_GET['checkout'];
-                    if(!empty($_GET["city"]) || !empty($_GET["roomtype"])) {
-                            $city = $_GET["city"];
-                            $roomtype = intval($_GET["roomtype"]);
-                            if($roomtype > 0 && $roomtype < 5 ){
-                                $roomTypeBool = TRUE;
-                            } else {
-                                $roomTypeBool= FALSE;
-                            }
-                            for ($i=0; $i<count($uniqueRes); ++$i) {
-                                if($city === $uniqueRes[$i][0]) {
-                                        $cityBool = TRUE;
-                                }
-                            }
-                            
-                            if($cityBool===TRUE || $roomTypeBool===TRUE) {   
-                                if($roomTypeBool === FALSE) {
-                                    $que2 = "SELECT * FROM room WHERE city='$city'";
-                                    $results = dbquery($que2, $conn);
-                                    $que3 = "SELECT MAX(price) AS maxPrice FROM room WHERE city='$city'";
-                                    $maxPrice = dbquery($que3, $conn);
-                                } else {
-                                    $que2 = "SELECT * FROM room WHERE city='$city' AND room_type='$roomtype'";
-                                    $results = dbquery($que2, $conn);  
-                                    $que3 = "SELECT MAX(price) AS maxPrice FROM room WHERE city='$city' AND room_type='$roomtype'";
-                                    $maxPrice = dbquery($que3, $conn);
-                                }
-//                                $que3 = "SELECT MAX(price) AS maxPrice FROM room WHERE city='$city' AND room_type='$roomtype'";
-//                                $maxPrice = dbquery($que3, $conn);
-//                            }elseif($cityBool===TRUE && $roomTypeBool===FALSE) {
-//                                $que3 = "SELECT MAX(price) AS maxPrice FROM room";
-//                                $maxPrice = dbquery($que3, $conn);
-//                                $que4 = "SELECT * FROM room WHERE city=$city";
-//                                $results = dbquery($que4,$conn);
-                            } else {
-                             $que3 = "SELECT MAX(price) AS maxPrice FROM room";
-                                $maxPrice = dbquery($que3, $conn);   
-                            } 
-                        
+                    if(isset($_GET["checkin"]) && !empty($_GET["checkin"]) && isset($_GET["checkout"]) && !empty($_GET["checkout"])){
+                        $checkin = $_GET['checkin'];
+                        $checkout = $_GET['checkout'];
                     } else {
-                                $que3 = "SELECT MAX(price) AS maxPrice FROM room";
-                                $maxPrice = dbquery($que3, $conn);
-                                $que4 = "SELECT * FROM room";
-                                $results = dbquery($que4,$conn);
-                        }
+                        $checkin = "";
+                        $checkout = "";
+                    }
+                    if(isset($_GET["city"]) && !empty($_GET["city"])) {
+                        $city = $_GET["city"];
+                    } else {
+                        $city = "";
+                    }
+                    if(isset($_GET["roomtype"]) && !empty($_GET["roomtype"])) {
+                        $roomtype = intval($_GET["roomtype"]);
+                    } else { 
+                        $roomtype = 0;
+                    } 
+                    if(!empty($city)) {
+                        if($roomtype == 0) {
+                            $que2 = "SELECT * FROM room WHERE city='$city'";
+                            $que3 = "SELECT MAX(price) AS maxPrice FROM room WHERE city='$city'";
+                        } elseif ($roomtype > 0 && $roomtype < 5) {
+                            $que2 = "SELECT * FROM room WHERE city='$city' AND room_type='$roomtype'";
+                            $que3 = "SELECT MAX(price) AS maxPrice FROM room WHERE city='$city' AND room_type='$roomtype'";
+                        }      
+                    } else {
+                             $que3 = "SELECT MAX(price) AS maxPrice FROM room";
+                             $que2 = "SELECT * FROM room";
+                            }
+                            $results = dbquery($que2,$conn);
+                            $maxPrice = dbquery($que3, $conn);
+                            //var_dump($results);
                         ?>
                                     <fieldset>
                                     <legend>Price</legend>
-                                            <p class="inline-block text-right p1"><span  id="priceVal"></span>€&nbsp;</p>
+                                            <p class="inline-block text-right p1"><span id="priceVal"></span>€&nbsp;</p>
                                             <input type="range" class="priceRange custom-range" id="priceRange" value=""     name="price" min="0" max="<?php echo $maxPrice[0][0]; ?>">
                                     </fieldset> 
                                 </form>
                             </nav>
                         </div>
                         <div class="col-sm-9">
+                            <div id="resultsPrinted">
                         <?php
                             if(!empty($results)) {
+                                $checkDateBool = FALSE;
                                 foreach ($results as $res) {
+                                    $checkDateBool = FALSE;
+                                    $bookingque = "SELECT bookings.check_in_date, bookings.check_out_date FROM bookings WHERE room_id=".$res[0];
+                                    $bookingsql = dbquery($bookingque, $conn);
+                                    $indate = strtotime($checkin);
+                                    $outdate = strtotime($checkout);
+                                    foreach ($bookingsql as $booking) {
+                                        $bookedindate= strtotime($booking[0]);
+                                        $bookedoutdate = strtotime($booking[1]);
+                                        if($indate >= $bookedindate || $outdate <= $bookedoutdate) {
+                                            $checkDateBool =TRUE;
+                                        }
+                                    }
+                                if($checkDateBool == FALSE) {
+                                    $availability = "<span class=\"alert alert-success availability\">Available</span>";
+                                } else {
+                                    $availability = "<span class=\"alert alert-danger availability\">Not Available</span>";
+
+                                }
                                 printf("                    
                                     <div class='card flex-row flex-wrap'>
-                                        <div class='card-header cheader'>
+                                        <div class='cheader'>
                                             <img class='card-img-right img' src='/assets/$res[4]'  alt='$res[4]'>
                                             "); 
                                                 switch ($res[13]){
@@ -241,26 +246,32 @@
 
                                         printf("
                                         </div>
-                                        <div class='card-block cbody'>
-                                        <h5 class='card-title'>$res[1]</h5>
-                                        <p class='card-text'>$hasWifi &nbsp; $hasParking &nbsp; $receivesPets</p>
-                                        <p class='card-text p3'>Price: $res[7]€</p>
-                                        <p class='card-text p3'>Area: <a class='customB' data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Click me for Google Maps location\" href='https://www.google.com/maps/@$res[9],$res[10],18.75' target='_blank'>$res[8]</a>, $res[3]</p>
+                                        <div class='cbody'>
+                                        <h5 class='card-title h text-uppercase'>$res[1]</h5>
+                                        <hr>
+                                        <div class='p3'>
+                                        <div class='p6'>$hasWifi &nbsp; $hasParking &nbsp; $receivesPets</div><br>
+                                        <div class='p4'>Per Night: $res[7]€</div><br>
+                                        <div class='p4'><i class=\"fas fa-thumbtack\"></i>$res[8], $res[3]</div>
+                                        </div>
+                                       
                                     </div>
                                     <div class=\"card-footer w-100\">
+                                        $availability
                                         <a class=\"customC\" href=\"learnmore.php?hname=$res[1]&checkin=$checkin&checkout=$checkout\">Learn More</a>
                                     </div>
                                 </div>
                                 <br><br>"
                                 );
 
-                        }
-                                
-                            } else {
+                            }
+                        
+                        }else {
                                 ?> <p>Results not found</p>
                                 <?php
                             }
                          ?>
+                         </div>
                         </div>
                     </div>
                 </div>

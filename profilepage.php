@@ -4,6 +4,9 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
     include_once "dbconn.php";
+    if(!isset($_SESSION["username"])) {
+        header("location:userlog.php?page=profile");
+    }
     
 ?>
 <!DOCTYPE html>

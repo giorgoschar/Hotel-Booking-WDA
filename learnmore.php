@@ -27,11 +27,16 @@
         <!--- FontAwesome --->  
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
         
-        <!-- Moment.js -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js" crossorigin="anonymous"></script>
         <!--- Local Scripts --->
         <link rel="stylesheet" href="/css/styles.css">
         <link rel="stylesheet" href="/css/learnmorestyles.css">
+        <script>
+            <?php if(isset($_SESSION["userid"]) && isset($_SESSION["username"])) { ?>
+               var userid = <?php echo $_SESSION["userid"];?>;
+            <?php } else { ?>
+                var userid=0;
+            <?php } ?>
+        </script>
         <script src="js/learnmore.js" async defer></script>
 
         <style>
@@ -191,23 +196,22 @@
                             //Validate Dates:
                             $checkinDateArr = explode('-',$checkinDate);
                             $checkoutDateArr = explode('-',$checkoutDate);
-                            $checkinDateBool =FALSE;
-                            $checkoutDateBool = FALSE;
+                            $checkDateBool =FALSE;
                             if(count($checkinDateArr) == 3 && count($checkoutDateArr) == 3) {
                                 if(checkdate($checkinDateArr[1],$checkinDateArr[2], $checkinDateArr[0]) && checkdate($checkoutDateArr[1],$checkoutDateArr[2],$checkoutDateArr[0])) {
+                                    $indate = strtotime($checkinDate);
+                                    $outdate = strtotime($checkoutDate);
+                                    //echo $indate;
+                                    //echo $outdate;
                                     for($i=0;$i<count($bookingsql);$i++) {
-                                        if($checkinDate === $bookingsql[$i][1]) {
-                                            $checkinDateBool =TRUE;
-
+                                        $bookedindate = strtotime($bookingsql[$i][1]);
+                                        $bookedoutdate = strtotime($bookingsql[$i][2]);
+                                        if($indate >= $bookedindate || $outdate <= $bookedoutdate) {
+                                            $checkDateBool =TRUE;
                                         }
-                                        if($checkoutDate === $bookingsql[$i][2]) {
-                                            $checkoutDateBool =TRUE;
-
-                                        }
-
 
                                     }
-                                if($checkinDateBool == TRUE || $checkoutDateBool == TRUE) {
+                                if($checkDateBool == TRUE) {
                                     ?>
                                     <div class="alert alert-danger">
                                       <strong>Not Available</strong> The hotel you are currently watching is not free for booking in the dates you are looking for.
@@ -233,16 +237,11 @@
                                         }
                                                                                         }
                                                                                             }
-
-                            
+                  
                         }else {
                             
                             ?> 
-                            <button style="background-color:transparent;" data-toggle="modal" data-target="#myModal" name="submit" value="Book Now" id="myModalBtn" class="customC">Book Now</button>
-                            
-                            
-                    
-                            
+                            <button style="background-color:transparent;" data-toggle="modal" data-target="#myModal" name="submit" value="Book Now" id="myModalBtn" class="customC">Select Dates</button>  
                     <?php
                         } 
                         
@@ -271,17 +270,20 @@
                           }
                           </script>
                 </div>
-                <div class="col-sm-12 reviews">
+                <div class="col-sm-12 reviews" id="reviews">
                     <h4>Reviews</h4>
+                    <div id="reviewcontainer">
                     <?php 
                         $roomid=$hoteldesc[0][0];
-                        $que3="SELECT reviews.*, user.username FROM reviews INNER JOIN user  on reviews.user_id = user.user_id WHERE reviews.room_id=$roomid";
+                        $que3="SELECT reviews.*, user.username FROM reviews INNER JOIN user  on reviews.user_id = user.user_id WHERE reviews.room_id=$roomid  ORDER BY reviews.rate DESC";
                         $reviews= dbquery($que3,$conn);
+                        //var_dump($reviews);
                         if(empty($reviews)){
                             printf("No Reviews Found");
                         }else {
+                            $t=1;
                         foreach ($reviews as $review) {
-                            printf("$review[0]." . $review[6]."&nbsp;");
+                            printf("<span>$t." . $review[6]."&nbsp;<span>");
                             for($i=1;$i<=$review[1];$i++) {
                                 printf("<i class=\"fas fa-star checked\"></i>");
                                 
@@ -295,38 +297,42 @@
                             }
                             printf("<br><p class=\"reviewdescsm\"><em>Time Added: $review[3]</em></p>");
                             printf("<p class=\"reviewdesc\">$review[2]</p>");
+                            $t= $t + 1;
                         }
                     }              
                     ?>
-                </div>
+                    </div>
+                    <!-- <div id="ajaxRes"></div>
+                </div> -->
                 <div class="col-sm-12 addReview" >
                     <h4>Add Review</h4>
-                    <form class="addReviewForm" onChange="" id="ratingform" method="post">
+                    <ul id="error"><li id="form-message"></li></ul>
+                    <div class="addReviewForm" id="ratingform">
                      <div class="rating">
                       <label>
-                        <input type="radio" name="stars" value="1" />
+                        <input type="radio" name="stars" onclick="getRate(this.id)" id="s1" value="1" />
                         <span class="icon">★</span>
                       </label>
                       <label>
-                        <input type="radio" name="stars" value="2" />
+                        <input type="radio" name="stars" id="s2" onclick="getRate(this.id)" value="2" />
                         <span class="icon">★</span>
                         <span class="icon">★</span>
                       </label>
                       <label>
-                        <input type="radio" name="stars" value="3" />
+                        <input type="radio" name="stars" id="s3" onclick="getRate(this.id)" value="3" />
                         <span class="icon">★</span>
                         <span class="icon">★</span>
                         <span class="icon">★</span>   
                       </label>
                       <label>
-                        <input type="radio" name="stars" value="4" />
+                        <input type="radio" name="stars" id="s4" onclick="getRate(this.id)" value="4" />
                         <span class="icon">★</span>
                         <span class="icon">★</span>
                         <span class="icon">★</span>
                         <span class="icon">★</span>
                       </label>
                       <label>
-                        <input type="radio" name="stars"  value="5" />
+                        <input type="radio" name="stars" id="s5" onclick="getRate(this.id)"  value="5" />
                         <span class="icon">★</span>
                         <span class="icon">★</span>
                         <span class="icon">★</span>
@@ -334,9 +340,10 @@
                         <span class="icon">★</span>
                       </label>
                       </div>
-                      <input type="textarea" class="ta" id="ta" name="reviewText" placeholder="Review">
-                      <input type="submit" name="submit" class="customD" value="Submit">
-                    </form>
+                      <input type="hidden" id="starrating" name="starrating" value="">
+                      <input type="hidden" id="roomid" name="roomid" value="<?php echo $roomid?>">
+                      <input type="textarea" class="ta" id="ta" name="reviewText" placeholder="Review Comments">
+                      <button type="submit"  class="customD" id="btn-submit">Add Review</button>
                 </div>
                 <?php
                         } else {
@@ -344,14 +351,15 @@
                             }
 
                         ?>
-                </div>
+            </div>
             </div>
             <footer class="footer">
-               <div class="col-sm-12">
-               <Hr class="style-two">
-                <p class="text-center" style="color:#dc3545;">Coded by George Charitidis</p>
+                <div class="col-sm-12">
+                    <Hr class="style-two">
+                    <p class="text-center" style="color:#dc3545;">Coded by George Charitidis</p>
                 </div>
             </footer>
+        
         <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap">
         </script>

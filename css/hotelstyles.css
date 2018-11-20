@@ -11,6 +11,7 @@
 }
 .sel1{
     width:70%;
+    background-color:transparent;
 }
 .p1{
     width:96%;
@@ -37,38 +38,49 @@ a:hover{
     width:20%;
     height:15vh;
     background-color:#ffffff;
-    position:relative;
-    
-    border-right:1px solid #dc3545;
-    border-spacing:20px;
 }
-
+.myh {
+    margin-top:1%;
+}
+.h {
+    text-indent: 20%;
+}
 .img{
-    position:absolute;
-    left:0%;
-    top:0%;
+    
     width:100%;
     height:100%;
 }
 .cbody {
-    width:50%;
+    width:80%;
     position:Relative;
     left:1%;
     padding:2%;
     
 }
 .card{
-    position:relative;
-    top:2.2%;
-    border:1px solid #dc3545;
+    margin-top:5%;
+    
 }
 .card-footer{
     height:10%;
 }
-.p3 {
-    font-size:1.10em;
-    color: #dc3545;
+.p3{
+    width:30%;
+    border-radius:4px;
+    background-color: #dc3545;
+    padding: 2% 2%;
+    float:left;
+}
+.p4 {  
+    font-size:1em;
+    color: #ffffff;
     font-weight:600;
+}
+.p6 {     
+    font-size:1em;
+    color: #ffffff;
+    font-weight:600;
+    
 }
 .customB{ 
     color:#dc3545;
@@ -83,9 +95,15 @@ a:hover{
     width:auto;
     border:1px solid #dc3545;
     border-radius:5px;
-    padding:1%
+    padding:0.75rem 1rem;
 }
 .customC:hover {
     color:#dc3545;
     text-decoration:none;
 }
+
+ .availability{
+     width:auto;
+     display:inline-flex;
+     float:left;
+ }

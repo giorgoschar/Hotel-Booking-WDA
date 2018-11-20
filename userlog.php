@@ -22,10 +22,16 @@
                     $checkind =$_POST["checkind"];
                     $hotel = $_POST["hotel"];
                     $checkoutd = $_POST["checkoutd"];    
-                    $loc1="/learnmore.php?hname=" . $hotel . "&checkin=" . $checkind. "&checkout=" . $checkoutd;                  
-                } else {
-                    $loc1="/index.php?";                    
+                    $loc1="learnmore.php?hname=".$hotel."&checkin=".$checkind."&checkout=".$checkoutd;           
+                    
+                }elseif(!empty($_POST["profilepage"])) {
+                    $loc1 = "profilepage.php";
                 }
+                 else {
+                    $loc1="index.php";
+                    
+                }
+                echo $loc1;
                 header("location:" . $loc1);
             } else {
                 $message ="Username or Password is not Correct";
@@ -76,13 +82,6 @@
                         <a class="nav-link text-danger" href="/hotels.php"><i class="fas fa-hotel"></i>&nbsp;Hotels</a>
                     </li>
                 </ul>
-<!--
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" href="/userlog.php"><i class="fas fa-sign-in-alt"></i>&nbsp;Login/Register</a>
-                    </li>
-                </ul>
--->
             </div>  
         </nav>
         <div class="container">    
@@ -96,12 +95,19 @@
                <label for="username">Username:</label><br> 
                <input type="text" class="form-control"   name="username">
                <label for="password">Password:</label><Br>
-               <input type="password" class="form-control"  name="password"><input type="hidden" name="hotel" value="<?php if($_GET["hotel"]) { echo $_GET["hotel"]; } else { echo ""; }?>">
-               <input type="hidden" name="checkind" value="<?php if($_GET["checkind"]) { echo $_GET["checkind"]; } else { echo "";; } ?>">
-               <input type="hidden" name="checkoutd" value="<?php if($_GET["checkoutd"]) { echo $_GET["checkoutd"]; } else { echo "";}?>">
+               <input type="password" class="form-control"  name="password">
+               <?php if(!empty($_GET["hotel"]) && (!empty($_GET["checkind"])) && (!empty($_GET["checkoutd"]))){ ?>
+                <input type="hidden" name="hotel" value="<?php if($_GET["hotel"]) { echo $_GET["hotel"]; } else { echo ""; }?>">
+                <input type="hidden" name="checkind" value="<?php if($_GET["checkind"]) { echo $_GET["checkind"]; } else { echo "";; } ?>">
+                <input type="hidden" name="checkoutd" value="<?php if($_GET["checkoutd"]) { echo $_GET["checkoutd"]; } else { echo "";}?>">
+                <?php 
+                } elseif(!empty($_GET["page"])) {
+               ?>
+               <input type="hidden" name="profilepage" value="<?php echo $_GET["page"];?>">
+               <?php }; ?>
 
-
-               <input type="submit" class="btn" name="submit2" Value="submit now">
+                <br><input type="submit" class="btn" name="submit2" Value="submit now">
+               
             </form>
             </div>
             </div>

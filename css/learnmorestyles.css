@@ -203,3 +203,12 @@ hr.style-two {
     height: 1px;
     background-image: linear-gradient(to right, rgba(220,53,69,0), rgba(220,53,69,0.75), rgba(220,53,69,0));
 }
+#error { 
+                color:#dc3545;
+                display:none;
+                font-size:12px;
+                font-weight:bold;
+                margin-bottom:10px;
+                padding:10px 25px;
+                max-width:250px;
+}
