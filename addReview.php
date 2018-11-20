@@ -3,13 +3,17 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
     include_once "dbconn.php";
-    $rating = $_POST['rating'];
-    $textarea = $_POST['textarea'];
-    $userid = $_POST['userid'];
-    $roomid = $_POST['roomid'];
-    if($userid==0) {
+    if(!isset($_POST["userid"])){
+        header("Location:index.php");
+    }
+    elseif($_POST['userid']==0 || empty($_POST['userid'])) {
         echo "exit";
         exit();
+    } else {
+        $userid = mysqli_real_escape_string($conn,$_POST['userid']);
+        $rating = mysqli_real_escape_string($conn,$_POST['rating']);
+        $textarea = mysqli_real_escape_string($conn,$_POST['textarea']);
+        $roomid = mysqli_real_escape_string($conn,$_POST['roomid']);
     }
     $ok = true;
 

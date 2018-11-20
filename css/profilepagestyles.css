@@ -47,7 +47,7 @@ hr.style-two {
     border:1px solid #dc3545;
     border-radius:5px;
     padding:1%;
-    display:inline-block;
+    display:inline-flex;
 }
 .customC2{
     color:#dc3545;
@@ -56,7 +56,7 @@ hr.style-two {
     border:1px solid #dc3545;
     border-radius:5px;
     padding:1%;
-    display:inline-block;
+    display:inline-flex;
 }
 .customC:hover {
     color:#dc3545;
@@ -141,3 +141,4 @@ hr.style-two {
         text-align:center;
        
     }
+    

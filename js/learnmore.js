@@ -32,7 +32,7 @@ form.submit.click(function() {
                 $('#form-message').text('You need to choose a Rating');
                 $('#error').show();
             }else if (messages=="exit") {
-                window.location.href="/userlog.php?hotel=" + form.roomid.val() + "&checkin=&checkout=";
+                $("#modalNeedToLogin").modal("show");
             } else {
                 $("#reviewcontainer").empty();
                 $("#reviewcontainer").html(messages);
@@ -59,8 +59,7 @@ form2.submit.click(function() {
                 $("#error-container").empty();
                 $("#error-container").html(messages)
             } else if (messages =="exit") { 
-                window.location.href="/userlog.php?hotel=" + form2.room.val() + "&checkin=" + form2.checkin.val() + "&checkout=" + form2.checkout.val();
-            
+                $("#modalNeedToLogin").modal("show");
             } else {
                 $("#error-container-old").empty();
                 $("#error-container").empty();
@@ -87,7 +86,7 @@ function addToFavorites() {
         hotel: hotelID, userid:userid
          }, function(messages,status) {
             if (messages=="exit") {
-                window.location.href="/userlog.php?hotel=" + form2.room.val() + "&checkin=" + form2.checkin.val() + "&checkout=" + form2.checkout.val();
+                $("#modalNeedToLogin").modal("show");
             } else { 
                 $("#favorites").empty();
                 $("#favorites").html(messages);

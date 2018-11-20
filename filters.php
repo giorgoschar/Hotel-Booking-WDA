@@ -5,9 +5,9 @@
     include_once "dbconn.php";
     //Get All Data.
     if(isset($_POST["radiocity"]) && !empty($_POST["radiocity"])) {      
-        $city= $_POST['radiocity'];
+        $city= mysqli_real_escape_string($conn,$_POST['radiocity']);
     }  else { 
-        $city = "";
+        $city = mysqli_real_escape_string($conn,"");
     }
     if(isset($_POST["checkedboxes"])&&(!empty($_POST["checkedboxes"])))  {  
         $roomtype =$_POST["checkedboxes"];
@@ -15,17 +15,17 @@
         $roomtype = [];
     }
     if(!empty($_POST["checkin"])){
-        $checkin = $_POST['checkin'];
+        $checkin = mysqli_real_escape_string($conn,$_POST['checkin']);
     } else { 
-        $checkin = "";
+        $checkin ="";
     }
     if(!empty($_POST["checkout"])){
-        $checkout = $_POST['checkout'];
+        $checkout = mysqli_real_escape_string($conn,$_POST['checkout']);
     } else { 
         $checkout = "";
     }
     if($_POST["maxprice"] > 0) {
-        $maxprice = $_POST['maxprice'];
+        $maxprice = mysqli_real_escape_string($conn,$_POST['maxprice']);
     } elseif ($_POST["maxprice"] == 0) {
         $maxprice = 0;
     }
@@ -120,7 +120,7 @@
                     ?>
                     <div class="front">
                         <img class="card-image" src="/assets/<?php echo $res["photo"]?>"  alt="<?php echo $res["photo"]?>">
-                        <div class="centered text-center text-uppercase">
+                        <div class="centered text-center text-uppercase" id="centered">
                             <?php echo $res["name"];?>
                         </div>
                     </div> 

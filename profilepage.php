@@ -5,7 +5,7 @@
     error_reporting(E_ALL);
     include_once "dbconn.php";
     if(!isset($_SESSION["username"])) {
-        header("location:userlog.php?page=profile");
+        header("location:index.php?page=profile");
     }
     
 ?>
@@ -19,30 +19,18 @@
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        
-
-
         <!-- Bootstrap --->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
         <!--- FontAwesome --->  
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
-        
         <!-- Moment.js -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js" crossorigin="anonymous"></script>
         <!--- Local Scripts --->
         <link rel="stylesheet" href="/css/styles.css">
         <link rel="stylesheet" href="/css/profilepagestyles.css">
         <script src="js/profilepage.js" async defer></script>
-
-        <style>
-          #map {
-            min-height:50vh;
-            width: 80%;  
-           }
-        </style>
     </head>    
     <body>
         <nav id="#navd" class="navbar sticky-top navbar-expand-md bg-light navbar-light">
@@ -60,15 +48,15 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
+                <div  id="username">
                         <?php 
                             if(isset($_SESSION["username"])) {
-                                printf("<a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a>");
+                                printf("<li class=\"nav-item\"><a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php?page=index.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a></li>");
                             } else {
-                                printf("<a class=\"nav-link text-danger\" href=\"/userlog.php\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a>");
+                                printf("<a class=\"nav-link text-danger\" data-toggle=\"modal\" data-target=\"#loginModal\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a></li>");
                             }
-                        ?>                    
-                    </li>
+                        ?>
+                    </div> 
                 </ul>
             </div>  
         </nav>
@@ -82,7 +70,7 @@
                         $reviews = dbquery($que, $conn);
                         //var_dump($reviews);
                         if(empty($reviews)){
-                            printf("No Reviews Found");
+                            printf("<p>No Reviews Found</p>");
                         } else {
                             ?> <div class="stars"> <?php
                             $num=0;
@@ -101,17 +89,16 @@
 
                                 }
                             }
+                            ?> </div> <?php
                         }
-                   
                     ?>
-
                    <h5 class="myfh4 text-left">FAVORITES</h5>
                    <Hr class="style-two">
                    <?php 
                         $que2 = "SELECT favorites.status, room.name FROM favorites INNER JOIN room on favorites.room_id=room.room_id WHERE favorites.user_id=" . $_SESSION["userid"];  
                         $favorites = dbquery($que2, $conn);
                         if(empty($favorites)){
-                            printf("No Favorites Found");
+                            printf("<p>No Favorites Found</p>");
                         } else {
                             $num2=0;
                             foreach ($favorites as $favorite) {
@@ -120,13 +107,14 @@
                                     ?> 
                                     <h6 class="my4"><?php echo "<p class='my4'><i  class='fas fa-heart' onclick='addToFavorites()' style='color:orange'></i>&nbsp;</p>" .$favorite["name"];?></h6><br>
                                     <?php
+                                } else {
+                                    printf("<p>No Favorites Found</p>");
                                 }
                             }
                         }
-                            
-                   
+
+
                     ?>
-                </div>
             </div>
             <div class="book col-sm-10">
                 <h5 class="myh3 text-center">MY BOOKINGS</h5>

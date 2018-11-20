@@ -10,7 +10,6 @@
     $result = dbquery($que, $conn);
     $que1 = "SELECT DISTINCT city FROM room";
     $uniqueRes = dbquery($que1, $conn);
-    //var_dump($uniqueRes);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,12 +32,17 @@
         
         <!--- Local Scripts --->
         <link rel="stylesheet" href="/css/styles.css">
-        <script src="/js/hotelscript.js"></script>
         <link rel="stylesheet" href="/css/hotelstyles.css">
+        <script src="/js/hotelscript.js"></script>
         <script src="js/script.js"></script>
 
     </head>    
     <body>
+       <?php 
+        if(empty($_SESSION["username"])) {
+            include_once "login_register.php";
+        }
+        ?>
         <nav id="#navd" class="navbar sticky-top navbar-expand-md bg-light navbar-light">
             <a class="navbar-brand" href="/index.php">CheapTel.com<small class="text-muted">The best hotel prices on the web.</small></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -54,24 +58,23 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
+                    <div  id="username">
                         <?php 
                             if(isset($_SESSION["username"])) {
-                                printf("<a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a>");
+                                printf("<li class=\"nav-item\"><a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php?page=hotels.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a></li>");
                             } else {
-                                printf("<a class=\"nav-link text-danger\" href=\"/userlog.php\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a>");
+                                printf("<a class=\"nav-link text-danger\" data-toggle=\"modal\" data-target=\"#loginModal\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a></li>");
                             }
-                        ?> 
-                    </li>
+                        ?>
+                    </div> 
                 </ul>
             </div>  
         </nav>
         <div class="container myh">
-<!--            <h4 class="text-center htitl">RESULTS</h4>-->
             <div class="row">
                 <div class="col-sm-3">
                     <div class="collapseIcon text-left">
-                        <a class="customA btn" data-toggle="collapse" href="#collapsibleSideNav" role="button" aria-expanded="false" aria-controls="collapsibleSideNav">
+                        <a class="customA" data-toggle="collapse" href="#collapsibleSideNav" role="button" aria-expanded="false" aria-controls="collapsibleSideNav">
                         Filter Results &nbsp;<i class="fas fa-filter"></i></a>
 
                     </div>
@@ -131,19 +134,19 @@
                             <hr>
                             <?php
                                 if(isset($_GET["checkin"]) && !empty($_GET["checkin"]) && isset($_GET["checkout"]) && !empty($_GET["checkout"])){
-                                    $checkin = $_GET['checkin'];
-                                    $checkout = $_GET['checkout'];
+                                    $checkin = mysqli_real_escape_string($conn,$_GET['checkin']);
+                                    $checkout = mysqli_real_escape_string($conn,$_GET['checkout']);
                                 } else {
                                     $checkin = "";
                                     $checkout = "";
                                 }
                                 if(isset($_GET["city"]) && !empty($_GET["city"])) {
-                                    $city = $_GET["city"];
+                                    $city = mysqli_real_escape_string($conn,$_GET["city"]);
                                 } else {
                                     $city = "";
                                 }
                                 if(isset($_GET["roomtype"]) && !empty($_GET["roomtype"])) {
-                                    $roomtype = intval($_GET["roomtype"]);
+                                    $roomtype = intval(mysqli_real_escape_string($conn,$_GET["roomtype"]));
                                 } else { 
                                     $roomtype = 0;
                                 } 
@@ -242,7 +245,7 @@
                                         ?>
                                         <div class="front">
                                             <img class="card-image" src="/assets/<?php echo $res["photo"];?>"  alt="<?php echo $res["photo"];?>">
-                                            <div class="centered text-center text-uppercase">
+                                            <div class="centered text-center text-uppercase" id="centered">
                                                 <?php echo $res["name"];?>
                                             </div>
                                         </div> 
@@ -274,4 +277,5 @@
                 </div>
             </div>
         </div>
+    </body>
 </html>

@@ -8,9 +8,12 @@
         ?>  <script>
                 var userid = <?php echo $_SESSION["userid"];?>;
             </script>
+
         <?php
     }else {
+        
         ?>
+        
         <script>
             var userid = 0;
         </script>
@@ -48,7 +51,8 @@
                 var userid=0;
             <?php } ?>
         </script>
-        <script src="js/learnmore.js" async defer></script>
+        <script src="js/script.js" async defer ></script>
+        <script src="js/learnmore.js"></script>
 
         <style>
           #map {
@@ -77,15 +81,15 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
+                    <div  id="username">
                         <?php 
-                        if(isset($_SESSION["username"])) {
-                            printf("<a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a>");
-                        } else {
-                            printf("<a class=\"nav-link text-danger\" href=\"/userlog.php\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a>");
-                        }
-                        ?>                    
-                    </li>
+                            if(isset($_SESSION["username"])) {
+                                printf("<li class=\"nav-item\"><a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php?page=learnmore.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a></li>");
+                            } else {
+                                printf("<a class=\"nav-link text-danger\" data-toggle=\"modal\" data-target=\"#loginModal\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a></li>");
+                            }
+                        ?>
+                    </div> 
                 </ul>
             </div>  
         </nav>
@@ -94,8 +98,27 @@
                 <div class="title col-sm-8">
                     <?php 
                         //getting Hotel Name from the link and printing on the title as well as getting all info on the room.
-                        if(!empty($_GET["hname"])){
-                            $hname = $_GET["hname"];
+                        $hnameBool = TRUE;
+                        if(empty($_GET["hname"])){
+                           $hnameBool=FALSE;
+                        } else { 
+                            $quer = "SELECT name FROM room";
+                            $hotelnames = dbquery($quer,$conn);
+                            // var_dump($hotelnames);
+                            foreach ($hotelnames as $hotelname) { 
+                                if ($hotelname[0] === $_GET["hname"]) {
+                                    $hnameBool = TRUE;
+                                    break;
+                                } else { 
+                                    $hnameBool = FALSE;
+                                }
+                            }
+                        }
+                        if($hnameBool === TRUE){
+                            if(empty($_SESSION["username"])) {
+                                include_once "login_register.php";
+                            }
+                            $hname = mysqli_real_escape_string($conn,$_GET["hname"]);
                             
                             $que = "SELECT * FROM room WHERE name='$hname'";
                             $hoteldesc = dbquery($que,$conn);
@@ -103,90 +126,89 @@
                                 <script>
                                    var hotelID = "<?php echo $hoteldesc[0][0]; ?>";
                                 </script>
+                        <div class="titleText">
+                            <p class="p1 cap" id="p1"><?php echo $hname;?></p><p class="p1" id="p1">&nbsp; |&nbsp; <?php echo $hoteldesc[0][2];?>,&nbsp;<?php echo $hoteldesc[0][3];?> |   Reviews:
                             <?php
-                        ?>
-                        <div class="p1"><p class="p1 cap"><?php echo $hname;?></p> | <?php echo $hoteldesc[0][2];?>,&nbsp;<?php echo $hoteldesc[0][3];?> |   Reviews:
-                        <?php
-                            //getting average review and printing the corresponding stars.
-                            $que2="SELECT AVG(rate) FROM reviews WHERE room_id=" . $hoteldesc[0][0];
-                            $reviews = dbquery($que2, $conn);
-                            $avgrev = $reviews[0][0];
-                        ?>
-                        <?php 
-                            $whole = floor($avgrev);
-                           //echo $wholeRes;
-                            $decRes = $avgrev - $whole;
-                            if($decRes > 0.5) {
-                                for($i=0;$i<$whole;$i++) {
-                                    printf("<i class=\"fas fa-star checked\"></i>");                            
-                                }
-                                 printf("<i class=\"fas fa-star-half-alt checked\"></i>");
-                                 $whole = $whole + 1;
-                            } else {
-                                for($i=0;$i<$whole;$i++) {
-                                    printf("<i class=\"fas fa-star checked\"></i>");                            
-                                }
-                            }
-                            
-                            $notChecked = 5 - $whole;
-                            //echo $notChecked;
-                            if($notChecked !== 0){
-                                //echo "whole:" . $whole;
-                                    for($i=0;$i<$notChecked;++$i) {
-                                        printf("<i class=\"notChecked far fa-star\"></i>");
+                                //getting average review and printing the corresponding stars.
+                                $que2="SELECT AVG(rate) FROM reviews WHERE room_id=" . $hoteldesc[0][0];
+                                $reviews = dbquery($que2, $conn);
+                                $avgrev = $reviews[0][0];
+                            ?>
+                            <?php 
+                                $whole = floor($avgrev);
+                            //echo $wholeRes;
+                                $decRes = $avgrev - $whole;
+                                if($decRes > 0.5) {
+                                    for($i=0;$i<$whole;$i++) {
+                                        printf("<i class=\"fas fa-star checked\"></i>");                            
                                     }
+                                    printf("<i class=\"fas fa-star-half-alt checked\"></i>");
+                                    $whole = $whole + 1;
+                                } else {
+                                    for($i=0;$i<$whole;$i++) {
+                                        printf("<i class=\"fas fa-star checked\"></i>");                            
                                     }
-                            if(isset($_SESSION["userid"]) && $_SESSION["userid"] !== "0") {
-                                $favs= "SELECT favorites.status FROM favorites WHERE user_id=" . $_SESSION['userid'] . " AND room_id= ". $hoteldesc[0][0];
-                                $favorites= dbquery($favs,  $conn);
-                        ?> 
+                                }
+                                
+                                $notChecked = 5 - $whole;
+                                //echo $notChecked;
+                                if($notChecked !== 0){
+                                    //echo "whole:" . $whole;
+                                        for($i=0;$i<$notChecked;++$i) {
+                                            printf("<i class=\"notChecked far fa-star\"></i>");
+                                        }
+                                        }
+                                if(isset($_SESSION["userid"]) && $_SESSION["userid"] !== "0") {
+                                    $favs= "SELECT favorites.status FROM favorites WHERE user_id=" . $_SESSION['userid'] . " AND room_id= ". $hoteldesc[0][0];
+                                    $favorites= dbquery($favs,  $conn);
+                            ?> 
+                            </p>
                             <div class="p1" id="favorites"> 
                                 <?php 
                                     if (!empty($favorites) && $favorites[0][0] == 1) {
-                                        printf("| <p class='p1'>&nbsp;<i class='fas fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");
-                                     } else { 
-                                        printf("| <p class='p1' >&nbsp;<i class='far fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");
+                                        printf("| <p class='heart'> &nbsp;<i class='fas fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");
+                                    } else { 
+                                        printf("| <p class='heart'>  &nbsp;<i class='far fa-heart ' onclick='addToFavorites()' style='color:orange'></i></p>");
                                     }
-                                 } else { 
-                                    printf("| <p class='p1'>&nbsp;<i class='far fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");
+                                } else { 
+                                    printf("| <p class='heart'>&nbsp;<i class='far fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");
                                 }
                             
                             
-                        ?>
+                                ?>
+                            </div>
+                            <div id="priceTitle" class="priceTitle">
+                                <p class="p1">Per Night: <?php echo $hoteldesc[0][7];?>€ </p>
                             </div>
                         </div>
-                        <p class="p1 float-right">Per Night: <?php echo $hoteldesc[0][7];?>€ </p>
-                    
                 </div>
                 <!-- Printing Room Info -->
                 <div class="image col-sm-12">
                     <img class="imagesrc" src="assets/<?php echo $hoteldesc[0][4]?>" alt="Hotel Room Photo">
                 </div>
-                <div class="info d-flex col-sm-8" id="info">
+                <div class="info col-sm-8" id="info">
                         <div class="p2" id="p2">
-                             <p class="text-center p1"><i class="fas fa-user text-center"></i>&nbsp;<?php echo $hoteldesc[0][6]?><br>COUNT OF GUESTS</p>
+                             <p class="text-center p5"><i class="fas fa-user text-center"></i>&nbsp;<?php echo $hoteldesc[0][6]?><br>COUNT OF GUESTS</p>
                          </div>
                          <div class="p2" id="p2">
-                             <p class="text-center p1"><i class="fas fa-bed text-center"></i>&nbsp;<?php echo $hoteldesc[0][5]?><br>TYPE OF ROOM</p>
+                             <p class="text-center p5"><i class="fas fa-bed text-center"></i>&nbsp;<?php echo $hoteldesc[0][5]?><br>TYPE OF ROOM</p>
                          </div>
                          <div class="p2" id="p2">
-                             <p class="text-center p1"><i class="fas fa-parking text-center"></i>&nbsp;<?php echo $hoteldesc[0][13]?><BR>PARKING</p>
+                             <p class="text-center p5"><i class="fas fa-parking text-center"></i>&nbsp;<?php echo $hoteldesc[0][13]?><BR>PARKING</p>
                          </div>
                          <div class="p2" id="p2">
-                             <p class="text-center p1"><i class="fas fa-wifi text-center"></i>&nbsp;<?php if($hoteldesc[0][14]==1){ echo "Yes";} else { echo "No"; }?><BR>WI-FI</p>
+                             <p class="text-center p5"><i class="fas fa-wifi text-center"></i>&nbsp;<?php if($hoteldesc[0][14]==1){ echo "Yes";} else { echo "No"; }?><BR>WI-FI</p>
                          </div>
                          <div class="p3 flex-fill" id="p3">
-                             <p class="text-center p1"><i class="fas fa-paw text-center"></i>&nbsp;<?php if($hoteldesc[0][15]==1){ echo "Yes";} else { echo "No"; }?><BR>PET FRIENDLY</p>
+                             <p class="text-center p5"><i class="fas fa-paw text-center"></i>&nbsp;<?php if($hoteldesc[0][15]==1){ echo "Yes";} else { echo "No"; }?><BR>PET FRIENDLY</p>
                          </div>
                 </div>
                 <div class="desc col-sm-12">
-                    <h4>Room Description</h4>
+                    <h4 class="addCol">Room Description</h4>
                     <p class="p4"><?php echo $hoteldesc[0][12]?></p>
                 </div>
                 <div class="booknow col-sm-12">
-                   
                     <?php 
-                    
                         //Checking Date Validation (using PHP checkdate()) and printing the correct availability and corresponding button.
                         $bookingque = "SELECT bookings.* FROM bookings INNER JOIN user on bookings.user_id=user.user_id WHERE room_id=".$hoteldesc[0][0];
                         $bookingsql = dbquery($bookingque, $conn);
@@ -328,7 +350,7 @@
                 </div>
                 <!-- Printing each review for this room -->
                 <div class="col-sm-12 reviews" id="reviews">
-                    <h4>Reviews</h4>
+                    <h4 class="addCol">Reviews</h4>
                     <div id="reviewcontainer">
                     <?php 
                         $roomid=$hoteldesc[0][0];
@@ -360,62 +382,62 @@
                     ?>
                     </div>
                     <!-- Add Review Form -->
-                <div class="col-sm-12 addReview" >
-                    <h4>Add Review</h4>
-                    <ul id="error"><li id="form-message"></li></ul>
-                    <div class="addReviewForm" id="ratingform">
-                     <div class="rating">
-                      <label>
-                        <input type="radio" name="stars" onclick="getRate(this.id)" id="s1" value="1" />
-                        <span class="icon">★</span>
-                      </label>
-                      <label>
-                        <input type="radio" name="stars" id="s2" onclick="getRate(this.id)" value="2" />
-                        <span class="icon">★</span>
-                        <span class="icon">★</span>
-                      </label>
-                      <label>
-                        <input type="radio" name="stars" id="s3" onclick="getRate(this.id)" value="3" />
-                        <span class="icon">★</span>
-                        <span class="icon">★</span>
-                        <span class="icon">★</span>   
-                      </label>
-                      <label>
-                        <input type="radio" name="stars" id="s4" onclick="getRate(this.id)" value="4" />
-                        <span class="icon">★</span>
-                        <span class="icon">★</span>
-                        <span class="icon">★</span>
-                        <span class="icon">★</span>
-                      </label>
-                      <label>
-                        <input type="radio" name="stars" id="s5" onclick="getRate(this.id)"  value="5" />
-                        <span class="icon">★</span>
-                        <span class="icon">★</span>
-                        <span class="icon">★</span>
-                        <span class="icon">★</span>
-                        <span class="icon">★</span>
-                      </label>
-                      </div>
-                      <input type="hidden" id="starrating" name="starrating" value="">
-                      <input type="hidden" id="roomid" name="roomid" value="<?php echo $roomid?>">
-                      <input type="textarea" class="ta" id="ta" name="reviewText" placeholder="Review Comments">
-                      <button type="submit"  class="customD" id="btn1-submit">Add Review</button>
+                    <div class="col-sm-12 addReview" >
+                        <h4 class="addCol">Add Review</h4>
+                        <ul id="error"><li id="form-message"></li></ul>
+                        <div class="addReviewForm" id="ratingform">
+                            <div class="rating">
+                                <label>
+                                    <input type="radio" name="stars" onclick="getRate(this.id)" id="s1" value="1" />
+                                    <span class="icon">★</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="stars" id="s2" onclick="getRate(this.id)" value="2" />
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="stars" id="s3" onclick="getRate(this.id)" value="3" />
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>   
+                                </label>
+                                <label>
+                                    <input type="radio" name="stars" id="s4" onclick="getRate(this.id)" value="4" />
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="stars" id="s5" onclick="getRate(this.id)"  value="5" />
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                </label>
+                            </div>
+                            <input type="hidden" id="starrating" name="starrating" value="">
+                            <input type="hidden" id="roomid" name="roomid" value="<?php echo $roomid?>">
+                            <input type="textarea" class="ta" id="ta" name="reviewText" placeholder="Review Comments">
+                            <button type="submit"  class="customD" id="btn1-submit">Add Review</button>
+                        </div>
+                    </div>
                 </div>
                 <?php
-                        } else {
-                            header('Location:404.html');                        
-                            }
-
-                        ?>
+                    } else {
+                        header('Location:404.html');                        
+                    }
+                ?>
             </div>
+        </div>
+        <footer class="footer">
+            <div class="col-sm-12">
+                <Hr class="style-two">
+                <p class="text-center" style="color:#dc3545;">Coded by George Charitidis</p>
             </div>
-            </div>
-            <footer class="footer">
-                <div class="col-sm-12">
-                    <Hr class="style-two">
-                    <p class="text-center" style="color:#dc3545;">Coded by George Charitidis</p>
-                </div>
-            </footer>
+        </footer>
         <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap">
         </script>
@@ -429,7 +451,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                            You successfully booked this hotel!
+                            <p>You successfully booked this hotel. It will now appear in your profile page!</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -438,5 +460,4 @@
             </div>
         </div>
     </body>
-    
 </html>

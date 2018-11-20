@@ -1,3 +1,9 @@
+@media screen and (max-width: 800px) {
+    #centered {
+        width:auto;
+    }
+
+}
 .htitl { 
     color:#dc3545;
     margin-top:2%;
@@ -7,6 +13,7 @@
     font-weight: 500;
     font-size: 1.3em;
     color: #dc3545;
+    margin-top:5%;
 }
 .sidenav{
     border-right:1px solid #dc3545;
@@ -32,13 +39,20 @@ a:hover{
     text-decoration: none;
     
 }
-.customA{
+.collapseIcon{ 
+    margin-top:5%;
+    margin-bottom:5%;
+}
+.customA {
     margin-top:2%;
-    border-color:#dc3545;
+    border:1px solid #dc3545;
+    padding:5%;
+    border-radius:4px;
     color: #dc3545;
 }
 .customA:hover {
     color:#dc3545;
+    text-decoration: none;
 }
 .cheader {
     width:20%;
@@ -85,13 +99,11 @@ a:hover{
 .customC{
     background-color:#dc3545;
     color: white;
-/*    color:#dc3545;*/
     float:right;
-    width:20%;
-/*    border:1px solid #dc3545;*/
+    width:auto;
     border-radius: .25rem;
-    padding: .75rem 1.25rem;
-    display:inline-block;
+    padding:1.8%;
+    display:inline-flex;
 }
 .customC:hover {
     color:#ffffff;
@@ -100,7 +112,8 @@ a:hover{
 
  .availability{
     float:left;
-    display:inline-block;
+    display:inline-flex;
+    width:auto;
  }
  .info-card {
     float: left;
@@ -130,8 +143,8 @@ a:hover{
 	padding: 6%;
 	width: 100%;
 	height: 100%;
-	-webkit-transform: rotateY(-180deg);
-	overflow: auto;
+    -webkit-transform: rotateY(-180deg);
+	overflow: hidden;
 }
 
 .info-card:hover .back {

@@ -7,31 +7,67 @@ body{
     }
     #p2 {
         display:block;
-        padding-left:1%;  
-        padding-right:3%
+        border:0px;
+        padding:0px;
+        text-align:center;
     }
     #p3 {
+         display:block;
+         border:0px;
+         padding:0px;
+         text-align:center;
+    }
+    #p1 { 
         display:block;
-        padding-left:1%;
-        padding-right:1%
+        border:0px;
+        padding:0px;
+    }
+    #favorites {
+        display:block;
+        border:0px;
+        padding:0px;
+    }
+    #priceTitle {
+        transform: translate(0%,0%);
+        position:relative; 
+        left:0%;
     }
    
 
 }
 .p1 {
     color:#ffffff;
-    display:inline-block;
+    display:inline-flex; 
     background-color:#dc3545;
     
 }
-.title {
+.p5 { 
+    color:#ffffff;
+    display:inline-block;
     background-color:#dc3545;
+}
+.priceTitle {
+    transform: translate(50%,0%);
+    position:relative;
+    left:6%; 
+}
+.title {
+    margin-top:2%;
+    background-color:#dc3545;
+    display:inline-flex;
     padding-top:1%;
+}
+.titleText { 
+    background-color:#dc3545;
+    display:inline-flex;
 }
 .image{
     margin-top:2%;
     
 }
+/* .heart {
+     padding-top:1.1%; 
+} */
 .imagesrc {
     width:60%;
     position:relative;
@@ -44,6 +80,7 @@ body{
     background-color:#dc3545;
     margin-top:2%;
     font-size:0.8em;
+    width:100%;
     
 }
 .p2 {
@@ -64,7 +101,7 @@ body{
     margin-top:2%;
     border-left:1px solid #dc3545;
 }
-h4{ 
+.addCol{ 
     color:#dc3545;
 }
 .p4{
@@ -82,6 +119,10 @@ h4{
     border-radius:5px;
     padding:1%;
 }
+#myModalBtn {
+    margin-bottom: 5%;
+    margin-top: 2%;
+}
 .reviews {
     margin-top:2%;
     border-left:1px solid #dc3545;
@@ -94,9 +135,11 @@ h4{
 }
 .checked { 
     color:orange;
+    padding-top:1%;
 }
 .notChecked {
     color:orange;
+    padding-top:1%;
 }
 .addReview { 
     margin-top:2%;
@@ -198,11 +241,11 @@ hr.style-two {
     background-image: linear-gradient(to right, rgba(220,53,69,0), rgba(220,53,69,0.75), rgba(220,53,69,0));
 }
 #error { 
-                color:#dc3545;
-                display:none;
-                font-size:12px;
-                font-weight:bold;
-                margin-bottom:10px;
-                padding:10px 25px;
-                max-width:250px;
+    color:#dc3545;
+    display:none;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:10px;
+    padding:10px 25px;
+    max-width:250px;
 }

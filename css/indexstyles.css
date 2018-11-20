@@ -27,23 +27,6 @@
   width: auto;  
 
 }
-
-.roomSearch input {
-    font-size:16px;
-}
-.roomSearch select {
-    font-size:16px;
-           
-}
-.roomSearch select, input[type="date"] {
-    color: #dc3545;    
-}
-
-.roomSearch input[type="text"]{
-    color: #dc3545;
-}
-
-
 .roomSearch input[type="submit"] {
     width:125px;
     border: 1px solid #dc3545;
@@ -52,9 +35,4 @@
     margin: 0 auto;
     color: #dc3545;
     background-color:transparent;
-}
-
-.form-control::placeholder { 
-    color: #dc3545;
-    opacity: 1;
 }

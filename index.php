@@ -9,6 +9,7 @@
     $result = $sql->fetch_All();
     $que1 = "SELECT DISTINCT city FROM room";
     $uniqueRes = dbquery($que1, $conn);
+    
 
 
 ?>
@@ -56,18 +57,33 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                       <?php 
+                    <div  id="username">
+                        <?php 
                             if(isset($_SESSION["username"])) {
-                                printf("<a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a>");
+                                printf("<li class=\"nav-item\"><a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php?page=index.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a></li>");
                             } else {
-                                printf("<a class=\"nav-link text-danger\" href=\"/userlog.php\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a>");
+                                printf("<a class=\"nav-link text-danger\" data-toggle=\"modal\" data-target=\"#loginModal\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a></li>");
                             }
-                        ?> 
-                    </li>
+                        ?>
+                    </div> 
                 </ul>
             </div>  
         </nav>
+        <?php 
+            if(empty($_SESSION["username"])) {
+                include_once "login_register.php";
+            }
+            if(isset($_GET["page"])) {#
+                $page = mysqli_real_escape_string($conn,$_GET["page"]);
+                if ($page=="profile") {
+                ?>
+                <script>
+                    $("#modalNeedToLogin").modal("show");
+                </script>
+                <?php
+                }
+            }
+        ?>
         <div id="homecarousel" class="carousel slide" data-interval="4000" data-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active" style="background-image: url('/assets/room-1.jpg');"></div>
@@ -89,7 +105,7 @@
                         <form class="roomSearch" id="roomSearch" method="GET" action="hotels.php">
                         <fieldset>
                             <legend>Room Search:</legend>
-                            <select class="form-control" name="city" id="city">
+                            <select class="form-control form-controller" name="city" id="city">
                                 <option value="" disabled selected>City</option>
                                 <?php 
                                     foreach($uniqueRes as $city) {
@@ -97,7 +113,7 @@
                                         }
                                 ?>
                             </select>             
-                            <select class="form-control" name="roomtype" id="roomtype">
+                            <select class="form-control form-controller" name="roomtype" id="roomtype">
                                 <option value="0"  selected>Room Type</option>
                                 <option name="sr" value="1"><?php echo $result[0][0] ?></option>
                                 <option name="dr" value="2"><?php echo $result[1][0] ?></option>
@@ -105,8 +121,8 @@
                                 <option name="fr" value="4"><?php echo $result[3][0] ?></option>   
                             </select>
                             
-                            <input placeholder="Check-In Date" name="checkin" class="form-control" autocomplete="off" onChange ="changeDate()" type="text" id="datepicker">
-                            <input placeholder="Check-Out Date" class="form-control" autocomplete="off" type="text" name="checkout" id="datepicker1" >
+                            <input placeholder="Check-In Date" name="checkin" class="form-control form-controller" autocomplete="off" onChange ="changeDate()" type="text" id="datepicker">
+                            <input placeholder="Check-Out Date" class="form-control form-controller" autocomplete="off" type="text" name="checkout" id="datepicker1" >
                             
                             <br><input type="submit" name="search" class="btn"  value="Search">
                         </fieldset>

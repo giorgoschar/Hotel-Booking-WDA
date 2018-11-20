@@ -3,12 +3,17 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
     include_once "dbconn.php";
-    $userid = $_POST['userid'];
-    $hotel = $_POST['hotel'];
-    if($userid == 0) {
+    if(!isset($_POST["userid"])){
+        header("Location:index.php?page=profile");
+    }
+    elseif($_POST['userid']==0 || empty($_POST['userid'])) {
         echo "exit";
         exit();
+    } else {
+        $userid = mysqli_real_escape_string($conn,$_POST['userid']);
+        $hotel = mysqli_real_escape_string($conn,$_POST['hotel']);
     }
+    
     $que = "SELECT favorites.status FROM favorites WHERE room_id=$hotel AND user_id=$userid";
     $favorites = dbquery($que,$conn);
     if (empty($favorites)){ 
@@ -17,7 +22,7 @@
         if ($conn->query($que2) === FALSE) {
             echo "Error: " . $que. "<br>" . $conn->error;
         } else {
-            printf("| <p class='p1' id='heartSelect'>&nbsp;<i class='fas fa-heart' onclick='addToFavorites(this.id)' style='color:orange'></i></p>");  
+            printf("| <p class='heart'> &nbsp;<i class='fas fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");  
         }
     } else if ($favorites[0][0] == 0) { 
         $status=1;
@@ -25,7 +30,7 @@
         if ($conn->query($que2) === FALSE) {
             echo "Error: " . $que. "<br>" . $conn->error;
         } else {
-            printf("| <p class='p1' id='heartSelect'>&nbsp;<i class='fas fa-heart' onclick='addToFavorites(this.id)' style='color:orange'></i></p>");  
+            printf("| <p class='heart'> &nbsp;<i class='fas fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");    
         } 
     } else { 
         $status=0;
@@ -33,7 +38,7 @@
         if ($conn->query($que2) === FALSE) {
             echo "Error: " . $que. "<br>" . $conn->error;
         } else {
-            printf("| <p class='p1' id='heartSelect'>&nbsp;<i class='far fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");  
+            printf("| <p class='heart'>  &nbsp;<i class='far fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");
         } 
     }
 ?>
