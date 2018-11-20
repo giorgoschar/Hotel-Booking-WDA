@@ -52,8 +52,9 @@
 
         <style>
           #map {
-            height:10% !important;
-            width: 40% !important;    
+            height:50% !important;
+            margin-top:2% !important;
+            width: 100% !important;    
            }
         </style>
     </head>    
@@ -155,6 +156,7 @@
                             </div>
                         </div>
                         <p class="p1 float-right">Per Night: <?php echo $hoteldesc[0][7];?>€ </p>
+                    
                 </div>
                 <!-- Printing Room Info -->
                 <div class="image col-sm-12">

@@ -1,17 +1,14 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-//include "validate.php";
-include_once "dbconn.php";
-session_start();
-//echo "connected successfuly";
-$que = "SELECT room_type FROM room_type";
-$sql = $conn->query($que);
-$result = $sql->fetch_All();
-$que1 = "SELECT DISTINCT city FROM room";
-$uniqueRes = dbquery($que1, $conn);
-//var_dump($uniqueRes);
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+    include_once "dbconn.php";
+    session_start();
+    $que = "SELECT room_type FROM room_type";
+    $sql = $conn->query($que);
+    $result = $sql->fetch_All();
+    $que1 = "SELECT DISTINCT city FROM room";
+    $uniqueRes = dbquery($que1, $conn);
 
 
 ?>
@@ -61,44 +58,43 @@ $uniqueRes = dbquery($que1, $conn);
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
                        <?php 
-                        if(isset($_SESSION["username"])) {
-                            printf("<a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a>");
-                        } else {
-                            printf("<a class=\"nav-link text-danger\" href=\"/userlog.php\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a>");
-                        }
+                            if(isset($_SESSION["username"])) {
+                                printf("<a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a>");
+                            } else {
+                                printf("<a class=\"nav-link text-danger\" href=\"/userlog.php\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a>");
+                            }
                         ?> 
-                        
                     </li>
                 </ul>
             </div>  
         </nav>
         <div id="homecarousel" class="carousel slide" data-interval="4000" data-ride="carousel">
-          <div class="carousel-inner">
-            <div class="carousel-item active" style="background-image: url('/assets/room-1.jpg');"></div>
-            <div class="carousel-item" style="background-image: url('/assets/room-2.jpg');"></div>
-            <div class="carousel-item" style="background-image: url('/assets/room-3.jpg');"></div>
-            <div class="carousel-item" style="background-image: url('/assets/room-4.jpg');"></div>
-            <div class="carousel-item" style="background-image: url('/assets/room-5.jpg');"></div>
-            <div class="carousel-item" style="background-image: url('/assets/room-6.jpg');"></div>
-            <div class="carousel-item" style="background-image: url('/assets/room-7.jpg');"></div>
-            <div class="carousel-item" style="background-image: url('/assets/room-8.jpg');"></div>
-            <div class="carousel-item" style="background-image: url('/assets/room-9.jpg');"></div>
-            <div class="carousel-item" style="background-image: url('/assets/room-10.jpg');"></div>
-        </div>   
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="background-image: url('/assets/room-1.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('/assets/room-2.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('/assets/room-3.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('/assets/room-4.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('/assets/room-5.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('/assets/room-6.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('/assets/room-7.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('/assets/room-8.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('/assets/room-9.jpg');"></div>
+                <div class="carousel-item" style="background-image: url('/assets/room-10.jpg');"></div>
+            </div> 
+        </div>
         <div class="container-fluid">    
             <div class="row">  
                 <div class="vertical-center">
                     <div class="col-md-4 col-sm-4 col-xs-12">
                         <form class="roomSearch" id="roomSearch" method="GET" action="hotels.php">
                         <fieldset>
-                           <legend>Room Search:</legend>
+                            <legend>Room Search:</legend>
                             <select class="form-control" name="city" id="city">
                                 <option value="" disabled selected>City</option>
                                 <?php 
-                                foreach($uniqueRes as $city) {
-                                        printf("<option>$city[0]</option>");
-                                    }
-                                
+                                    foreach($uniqueRes as $city) {
+                                            printf("<option>$city[0]</option>");
+                                        }
                                 ?>
                             </select>             
                             <select class="form-control" name="roomtype" id="roomtype">

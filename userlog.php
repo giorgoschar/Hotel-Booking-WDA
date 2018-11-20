@@ -88,30 +88,33 @@
         </nav>
         <div class="container">    
             <div class="row">
-            <div class="col-sm-4 loginform">
-            <form action="<?php echo htmlentities($_SERVER["PHP_SELF"]);?>" method="post">
-              <?php if(!empty($message)){ ?>
-               <p class="alert alert-danger"><?php echo $message ?></p>
-               <?php
-                                        } ?>
-               <label for="username">Username:</label><br> 
-               <input type="text" class="form-control"   name="username">
-               <label for="password">Password:</label><Br>
-               <input type="password" class="form-control"  name="password">
-               <?php if(!empty($_GET["hotel"])){ ?>
-                <input type="hidden" name="hotel" value="<?php if($_GET["hotel"]) { echo $_GET["hotel"]; } else { echo ""; }?>">
-                <input type="hidden" name="checkind" value="<?php echo $_GET["checkin"]; ?>">
-                <input type="hidden" name="checkoutd" value="<?php echo $_GET["checkout"]; ?>">
-                <?php 
-                } elseif(!empty($_GET["page"])) {
-               ?>
-               <input type="hidden" name="profilepage" value="<?php echo $_GET["page"];?>">
-               <?php }; ?>
-
-                <br><input type="submit" class="btn" name="submit2" Value="submit now">
-               
-            </form>
-            </div>
+                <div class="col-sm-4 loginform">
+                    <form action="<?php echo htmlentities($_SERVER["PHP_SELF"]);?>" method="post" class="login">
+                        <?php 
+                            if(!empty($message)){ 
+                        ?>
+                                <p class="alert alert-danger"><?php echo $message ?></p>
+                       <?php
+                            } 
+                        ?>
+                       <label for="username" class="labels">Username:</label><br> 
+                       <input type="text" class="form-control"   name="username">
+                       <label for="password" class="labels">Password:</label><Br>
+                       <input type="password" class="form-control"  name="password">
+                       <?php if(!empty($_GET["hotel"])){ ?>
+                        <input type="hidden" name="hotel" value="<?php if($_GET["hotel"]) { echo $_GET["hotel"]; } else { echo ""; }?>">
+                        <input type="hidden" name="checkind" value="<?php echo $_GET["checkin"]; ?>">
+                        <input type="hidden" name="checkoutd" value="<?php echo $_GET["checkout"]; ?>">
+                        <?php 
+                        } elseif(!empty($_GET["page"])) {
+                            ?>
+                                <input type="hidden" name="profilepage" value="<?php echo $_GET["page"];?>">
+                            <?php 
+                        }
+                        ?>
+                            <input type="submit" class="btn" name="submit2" Value="Login">
+                    </form>
+                </div>
             </div>
         </div>
     </body>
