@@ -1,29 +1,30 @@
-$(document).ready(function(){ 
+$(document).ready(function(){   
   var slider = document.getElementById("priceRange");
   var output = document.getElementById("priceVal");
   output.innerHTML = slider.value;
-
+ 
   slider.oninput = function() {
     output.innerHTML = this.value;
   };
 
   $(".radiocity").change(function(){  
-        getData();
+    getData();   
   });
   $(".roomselect").change(function(){  
     getData();
-});
+  });
   $("#datepicker").change(function(){  
     getData();
-});
-$("#datepicker1").change(function(){  
-  getData();
-});
-  
-
-
   });
-  function getData() { 
+  $("#datepicker1").change(function(){  
+    getData();
+  });
+  $("#priceRange").change(function() {
+    getData();
+  });
+});
+
+function getData() { 
     var radiocity = $("input[type=radio][name='optradiocity']:checked").val();
     var checkedboxes=[];
     $("input[type=checkbox][name=roomselect]:checked").each(function(){
@@ -31,15 +32,19 @@ $("#datepicker1").change(function(){
     });
     var checkin = $("#datepicker").val();
     var checkout = $("#datepicker1").val();
+    var maxprice = $("#priceVal").html();
     $.post("filters.php", {
-      radiocity: radiocity, checkedboxes: checkedboxes, checkin: checkin , checkout:checkout
+      radiocity: radiocity, checkedboxes: checkedboxes, checkin: checkin , checkout:checkout, maxprice:maxprice
        }, function(messages,status) {
            if(messages==false) { 
                $('#resultsPrinted').html('No results Found');
            } else {
-               $("#resultsPrinted").empty();
-               $("#resultsPrinted").html(messages);
+              $("#resultsPrinted").empty();
+              $("#resultsPrinted").html(messages).hide();
+               $("#resultsPrinted").slideDown("slow");
+
+               
            }
        });
-    //var maxprice = $("#priceVal").html();
-  };
+    
+};

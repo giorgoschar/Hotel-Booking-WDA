@@ -7,7 +7,10 @@
     $textarea = $_POST['textarea'];
     $userid = $_POST['userid'];
     $roomid = $_POST['roomid'];
-
+    if($userid==0) {
+        echo "exit";
+        exit();
+    }
     $ok = true;
 
     if ( !isset($rating) || empty($rating) ) {

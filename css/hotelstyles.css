@@ -1,3 +1,6 @@
+.htitl { 
+    color:#dc3545;
+}
 .ptitl {
     font-weight: 500;
     font-size: 1.3em;
@@ -6,7 +9,7 @@
 .sidenav{
     border-right:1px solid #dc3545;
     position:relative;
-    top:2%;
+    top:1%;
     height:100%;
 }
 .sel1{
@@ -51,6 +54,7 @@ a:hover{
     height:100%;
 }
 .cbody {
+    display:table;
     width:80%;
     position:Relative;
     left:1%;
@@ -64,23 +68,9 @@ a:hover{
 .card-footer{
     height:10%;
 }
-.p3{
-    width:30%;
-    border-radius:4px;
-    background-color: #dc3545;
-    padding: 2% 2%;
-    float:left;
-}
-.p4 {  
-    font-size:1em;
-    color: #ffffff;
-    font-weight:600;
-}
-.p6 {     
-    font-size:1em;
-    color: #ffffff;
-    font-weight:600;
-    
+.p3 {
+    font-size:0.9em;
+    color:black;
 }
 .customB{ 
     color:#dc3545;
@@ -90,20 +80,97 @@ a:hover{
     text-decoration:underline;
 }
 .customC{
-    color:#dc3545;
+    background-color:#dc3545;
+    color: white;
+/*    color:#dc3545;*/
     float:right;
-    width:auto;
-    border:1px solid #dc3545;
-    border-radius:5px;
-    padding:0.75rem 1rem;
+    width:20%;
+/*    border:1px solid #dc3545;*/
+    border-radius: .25rem;
+    padding: .75rem 1.25rem;
+    display:inline-block;
 }
 .customC:hover {
-    color:#dc3545;
+    color:#ffffff;
     text-decoration:none;
 }
 
  .availability{
-     width:auto;
-     display:inline-flex;
-     float:left;
+    float:left;
+    display:inline-block;
  }
+ .info-card {
+    float: left;
+    margin: 10px;
+    width:100%;
+	-webkit-perspective: 600px;
+}
+
+.front, .back {
+	background: #FFF;
+	border-radius: 10px;
+	transition: -webkit-transform 1s;
+	-webkit-transform-style: preserve-3d;
+	-webkit-backface-visibility: hidden;
+	border: 1px solid black;
+}
+
+.front {
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 1;
+}
+
+.back {
+	padding: 6%;
+	width: 100%;
+	height: 100%;
+	-webkit-transform: rotateY(-180deg);
+	overflow: auto;
+}
+
+.info-card:hover .back {
+	-webkit-transform: rotateY(0);
+}
+
+.info-card:hover .front {
+	-webkit-transform: rotateY(180deg);
+}
+.card-image {
+    width: 100%;
+    height: 100%;
+    }
+.centered {
+        position: absolute;
+        top:12%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color:#ffffff;
+        background-color:rgba(0,0,0,0.4);
+        width: 50%;
+        padding-top:6%;
+        padding-bottom:3%;
+        font-size: 1.10em;
+        font-family: sans-serif;
+        letter-spacing: 0.7em;
+        font-weight: 600;
+        
+    }
+.price {
+        font-size:0.9em;
+        color:black;
+        text-align:center;
+       
+    }
+.date {
+        display: inline-block;
+        font-size:0.9em;
+        padding-top: 1%;
+        
+    }
+.dates { 
+        text-align: center;
+        
+    }

@@ -4,7 +4,18 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
     include_once "dbconn.php";
-    
+    if(isset($_SESSION["userid"])){
+        ?>  <script>
+                var userid = <?php echo $_SESSION["userid"];?>;
+            </script>
+        <?php
+    }else {
+        ?>
+        <script>
+            var userid = 0;
+        </script>
+        <?php
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,8 +52,8 @@
 
         <style>
           #map {
-            min-height:50vh;
-            width: 80%;  
+            height:10% !important;
+            width: 40% !important;    
            }
         </style>
     </head>    
@@ -81,64 +92,71 @@
             <div class="row">
                 <div class="title col-sm-8">
                     <?php 
+                        //getting Hotel Name from the link and printing on the title as well as getting all info on the room.
                         if(!empty($_GET["hname"])){
                             $hname = $_GET["hname"];
+                            
                             $que = "SELECT * FROM room WHERE name='$hname'";
                             $hoteldesc = dbquery($que,$conn);
-                            //var_dump($hoteldesc);
-                        ?>
-                        <div class="p1"><p class="p1 cap"><?php echo $hname;?></p> | <?php echo $hoteldesc[0][2];?>,&nbsp;<?php echo $hoteldesc[0][3];?> |   Reviews:<?php
-                            $que2="SELECT rate FROM reviews WHERE room_id=" . $hoteldesc[0][0];
-                            $reviewCount = 0;
-                            $reviewRate = 0;
-                            $reviewRes = 0;
-                            $reviews=dbquery($que2,$conn);
-                            foreach($reviews as $review) {
-                                $reviewCount += 1;
-                                $reviewRate += $review[0];
-                            }
-                            if($reviewRate!==0){
-                            $reviewRes = $reviewRate / $reviewCount;
-                            } else {
-                                $reviewRes = 0;
-                            }
                             ?>
+                                <script>
+                                   var hotelID = "<?php echo $hoteldesc[0][0]; ?>";
+                                </script>
+                            <?php
+                        ?>
+                        <div class="p1"><p class="p1 cap"><?php echo $hname;?></p> | <?php echo $hoteldesc[0][2];?>,&nbsp;<?php echo $hoteldesc[0][3];?> |   Reviews:
+                        <?php
+                            //getting average review and printing the corresponding stars.
+                            $que2="SELECT AVG(rate) FROM reviews WHERE room_id=" . $hoteldesc[0][0];
+                            $reviews = dbquery($que2, $conn);
+                            $avgrev = $reviews[0][0];
+                        ?>
                         <?php 
-                       $checked = 0;
-                            $wholeRes = floor($reviewRes);
-                            $decRes = $reviewRes - $wholeRes;
+                            $whole = floor($avgrev);
+                           //echo $wholeRes;
+                            $decRes = $avgrev - $whole;
                             if($decRes > 0.5) {
-                                for($i=1;$i<=$reviewRes;$i++) {
+                                for($i=0;$i<$whole;$i++) {
                                     printf("<i class=\"fas fa-star checked\"></i>");                            
                                 }
                                  printf("<i class=\"fas fa-star-half-alt checked\"></i>");
+                                 $whole = $whole + 1;
                             } else {
-                                for($i=1;$i<=$reviewRes;$i++) {
+                                for($i=0;$i<$whole;$i++) {
                                     printf("<i class=\"fas fa-star checked\"></i>");                            
                                 }
                             }
                             
-                            $notChecked = 5 - $reviewRes;
+                            $notChecked = 5 - $whole;
+                            //echo $notChecked;
                             if($notChecked !== 0){
-                                $whole = floor($notChecked);
-                                $dec = $notChecked - $whole;
-                                if($dec>0.5) {
-                                    printf("<i class=\"notChecked fas fa-star-half-alt\"></i>");
-                                    for($i=1;$i<=$notChecked;++$i) {
+                                //echo "whole:" . $whole;
+                                    for($i=0;$i<$notChecked;++$i) {
                                         printf("<i class=\"notChecked far fa-star\"></i>");
                                     }
-                                    } else {
-                                        for($i=1;$i<=$notChecked;++$i) {
-                                            printf("<i class=\"notChecked far fa-star\"></i>");
-                                    
-                                        }
                                     }
-                            }
+                            if(isset($_SESSION["userid"]) && $_SESSION["userid"] !== "0") {
+                                $favs= "SELECT favorites.status FROM favorites WHERE user_id=" . $_SESSION['userid'] . " AND room_id= ". $hoteldesc[0][0];
+                                $favorites= dbquery($favs,  $conn);
+                        ?> 
+                            <div class="p1" id="favorites"> 
+                                <?php 
+                                    if (!empty($favorites) && $favorites[0][0] == 1) {
+                                        printf("| <p class='p1'>&nbsp;<i class='fas fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");
+                                     } else { 
+                                        printf("| <p class='p1' >&nbsp;<i class='far fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");
+                                    }
+                                 } else { 
+                                    printf("| <p class='p1'>&nbsp;<i class='far fa-heart' onclick='addToFavorites()' style='color:orange'></i></p>");
+                                }
+                            
                             
                         ?>
+                            </div>
                         </div>
                         <p class="p1 float-right">Per Night: <?php echo $hoteldesc[0][7];?>€ </p>
                 </div>
+                <!-- Printing Room Info -->
                 <div class="image col-sm-12">
                     <img class="imagesrc" src="assets/<?php echo $hoteldesc[0][4]?>" alt="Hotel Room Photo">
                 </div>
@@ -164,30 +182,10 @@
                     <p class="p4"><?php echo $hoteldesc[0][12]?></p>
                 </div>
                 <div class="booknow col-sm-12">
-                   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                      <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                          <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Select Date to Book</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                              <span aria-hidden="true">&times;</span>
-                                            </button>
-                                          </div>
-                                          <div class="modal-body">
-                                              <form action="booknow.php" method="post">
-                                                <input placeholder="Check-In Date" name="checkin" class="form-control" autocomplete="off" onChange ="changeDate()" type="text" id="datepicker" required>
-                                                <input placeholder="Check-Out Date" class="form-control" autocomplete="off" type="text" name="checkout" id="datepicker1" required>
-                                                <input type="hidden" type="text" name="room_id" value="<?php echo $hoteldesc[0][0];?>">
-                                                <input type="hidden" type="text" name="user_id" value="<?php if(isset($_SESSION["userid"])) {echo $_SESSION["userid"];} else {echo "0";}?>">
-                                                <div class="modal-footer">
-                                                <input type="submit" name="submit" value="Book Now" class="form-control">
-                                                </div>
-                                             </form>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
+                   
                     <?php 
+                    
+                        //Checking Date Validation (using PHP checkdate()) and printing the correct availability and corresponding button.
                         $bookingque = "SELECT bookings.* FROM bookings INNER JOIN user on bookings.user_id=user.user_id WHERE room_id=".$hoteldesc[0][0];
                         $bookingsql = dbquery($bookingque, $conn);
                         if(!empty($_GET["checkin"] && !empty(($_GET["checkout"])))){
@@ -201,20 +199,52 @@
                                 if(checkdate($checkinDateArr[1],$checkinDateArr[2], $checkinDateArr[0]) && checkdate($checkoutDateArr[1],$checkoutDateArr[2],$checkoutDateArr[0])) {
                                     $indate = strtotime($checkinDate);
                                     $outdate = strtotime($checkoutDate);
-                                    //echo $indate;
-                                    //echo $outdate;
                                     for($i=0;$i<count($bookingsql);$i++) {
                                         $bookedindate = strtotime($bookingsql[$i][1]);
                                         $bookedoutdate = strtotime($bookingsql[$i][2]);
-                                        if($indate >= $bookedindate || $outdate <= $bookedoutdate) {
+                                        if($indate == $bookedindate || $outdate == $bookedoutdate) {
                                             $checkDateBool =TRUE;
+                                            break;
                                         }
-
+                                        if($indate >= $bookedindate && $indate <= $bookedoutdate) {
+                                            $checkDateBool = TRUE;
+                                            break;
+                                        }
+                                        if($outdate >= $bookedindate && $outdate<=$bookedoutdate) {
+                                            $checkDateBool = TRUE;
+                                            break;
+                                        }
                                     }
                                 if($checkDateBool == TRUE) {
                                     ?>
-                                    <div class="alert alert-danger">
-                                      <strong>Not Available</strong> The hotel you are currently watching is not free for booking in the dates you are looking for.
+                                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Select Dates to Book</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                              <div class="form">
+                                                <input placeholder="Check-In Date" name="checkin" class="form-control" autocomplete="off" onChange ="changeDate()" type="text" id="datepicker" required>
+                                                <input placeholder="Check-Out Date" class="form-control" autocomplete="off" type="text" name="checkout" id="datepicker1" required>
+                                                <input type="hidden" type="text" id="room_id" value="<?php echo $hoteldesc[0][0];?>">
+                                                <!-- <input type="hidden" type="text" name="user_id" value="<?php if(isset($_SESSION["userid"])) {echo $_SESSION["userid"];} else {echo "0";}?>"> -->
+                                                <div class="modal-footer">
+                                                <button type="submit" id="btn-submit" value="" class="form-control">Book Now</button>
+                                                </div>
+                                             </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div id="error-container"></div>
+                                    <div id="error-container-old">
+                                        <div class="alert alert-danger">
+                                            <strong>Not Available</strong> The hotel you are currently watching is not free for booking in the dates you are looking for.
+                                        </div>
                                     </div>
                                     
                                     <button style="background-color:transparent;" data-toggle="modal" data-target="#myModal" value="Book Now" id="myModalBtn" class="customC float-right" error>Click to Select New Dates</button>
@@ -224,14 +254,13 @@
                                     <div class="alert alert-info">
                                       <strong>Available</strong> The hotel you are currently watching is free for booking in the dates you are looking for.
                                     </div>
-                                    <form action="booknow.php" method="post">
-                                        <input type="hidden" type="text" name="room_id" value="<?php echo $hoteldesc[0][0]?>">
-                                        <input type="hidden" type="text" name="user_id" value="<?php if(isset($_SESSION["userid"])) {echo $_SESSION["userid"];} else {echo "0";}?>">
-                                        <input type="hidden" type="text" name="checkin" value="<?php echo $checkinDate;?>">
-                                        <input type="hidden" type="text" name="checkout" value="<?php echo $checkoutDate?>">
-                                        <input type="submit" name="submit" style="background-color:transparent;" value="Book Now" class="customC">
-                                        
-                                     </form>
+                                    <div class="form">
+                                        <input type="hidden" type="text" id="room_id" value="<?php echo $hoteldesc[0][0]?>">
+                                        <!-- <input type="hidden" type="text" name="user_id" value=""> -->
+                                        <input type="hidden" type="text" id="datepicker" value="<?php echo $checkinDate;?>">
+                                        <input type="hidden" type="text" id="datepicker1" value="<?php echo $checkoutDate?>">
+                                        <button type="submit" id="btn-submit" name="btn-submit" style="background-color:transparent;" class="customC">Book Now</button>
+                                     </div>
                                      <?php
                                 
                                         }
@@ -240,13 +269,38 @@
                   
                         }else {
                             
-                            ?> 
+                            ?>
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Select Dates to Book</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                              <div class="form">
+                                                <input placeholder="Check-In Date" name="checkin" class="form-control" autocomplete="off" onChange ="changeDate()" type="text" id="datepicker" required>
+                                                <input placeholder="Check-Out Date" class="form-control" autocomplete="off" type="text" name="checkout" id="datepicker1" required>
+                                                <input type="hidden" type="text" id="room_id" value="<?php echo $hoteldesc[0][0];?>">
+                                                <!-- <input type="hidden" type="text" name="user_id" value="<?php if(isset($_SESSION["userid"])) {echo $_SESSION["userid"];} else {echo "0";}?>"> -->
+                                                <div class="modal-footer">
+                                                <button type="submit" id="btn-submit" value="" class="form-control">Book Now</button>
+                                                </div>
+                                             </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div id="error-container"></div> 
                             <button style="background-color:transparent;" data-toggle="modal" data-target="#myModal" name="submit" value="Book Now" id="myModalBtn" class="customC">Select Dates</button>  
                     <?php
                         } 
                         
                     ?>
                 </div>
+                <!-- Google Maps -->
                 <div class="col-sm-12" id="map">
                         <script>
                           function initMap() {
@@ -270,6 +324,7 @@
                           }
                           </script>
                 </div>
+                <!-- Printing each review for this room -->
                 <div class="col-sm-12 reviews" id="reviews">
                     <h4>Reviews</h4>
                     <div id="reviewcontainer">
@@ -302,8 +357,7 @@
                     }              
                     ?>
                     </div>
-                    <!-- <div id="ajaxRes"></div>
-                </div> -->
+                    <!-- Add Review Form -->
                 <div class="col-sm-12 addReview" >
                     <h4>Add Review</h4>
                     <ul id="error"><li id="form-message"></li></ul>
@@ -343,7 +397,7 @@
                       <input type="hidden" id="starrating" name="starrating" value="">
                       <input type="hidden" id="roomid" name="roomid" value="<?php echo $roomid?>">
                       <input type="textarea" class="ta" id="ta" name="reviewText" placeholder="Review Comments">
-                      <button type="submit"  class="customD" id="btn-submit">Add Review</button>
+                      <button type="submit"  class="customD" id="btn1-submit">Add Review</button>
                 </div>
                 <?php
                         } else {
@@ -353,16 +407,34 @@
                         ?>
             </div>
             </div>
+            </div>
             <footer class="footer">
                 <div class="col-sm-12">
                     <Hr class="style-two">
                     <p class="text-center" style="color:#dc3545;">Coded by George Charitidis</p>
                 </div>
             </footer>
-        
         <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap">
         </script>
+        <div class="modal fade" id="modalbooked" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalbookedLabel">Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                            You successfully booked this hotel!
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
     
 </html>

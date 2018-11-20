@@ -18,11 +18,13 @@
             if(count($loginfo)>0) {
                 $_SESSION["username"] =$uname;
                 $_SESSION["userid"] = $loginfo[0][0];
-                if(!empty($_POST["hotel"]) && (!empty($_POST["checkind"])) && (!empty($_POST["checkoutd"]))){
+                if(!empty($_POST["hotel"])){
                     $checkind =$_POST["checkind"];
                     $hotel = $_POST["hotel"];
                     $checkoutd = $_POST["checkoutd"];    
-                    $loc1="learnmore.php?hname=".$hotel."&checkin=".$checkind."&checkout=".$checkoutd;           
+                    $que1 = "SELECT name FROM room WHERE room_id = $hotel";
+                    $res = dbquery($que1,$conn);
+                    $loc1="learnmore.php?hname=".$res[0][0]."&checkin=".$checkind."&checkout=".$checkoutd;           
                     
                 }elseif(!empty($_POST["profilepage"])) {
                     $loc1 = "profilepage.php";
@@ -96,10 +98,10 @@
                <input type="text" class="form-control"   name="username">
                <label for="password">Password:</label><Br>
                <input type="password" class="form-control"  name="password">
-               <?php if(!empty($_GET["hotel"]) && (!empty($_GET["checkind"])) && (!empty($_GET["checkoutd"]))){ ?>
+               <?php if(!empty($_GET["hotel"])){ ?>
                 <input type="hidden" name="hotel" value="<?php if($_GET["hotel"]) { echo $_GET["hotel"]; } else { echo ""; }?>">
-                <input type="hidden" name="checkind" value="<?php if($_GET["checkind"]) { echo $_GET["checkind"]; } else { echo "";; } ?>">
-                <input type="hidden" name="checkoutd" value="<?php if($_GET["checkoutd"]) { echo $_GET["checkoutd"]; } else { echo "";}?>">
+                <input type="hidden" name="checkind" value="<?php echo $_GET["checkin"]; ?>">
+                <input type="hidden" name="checkoutd" value="<?php echo $_GET["checkout"]; ?>">
                 <?php 
                 } elseif(!empty($_GET["page"])) {
                ?>

@@ -45,14 +45,11 @@
         </style>
     </head>    
     <body>
-       
         <nav id="#navd" class="navbar sticky-top navbar-expand-md bg-light navbar-light">
             <a class="navbar-brand" href="/index.php">CheapTel.com<small class="text-muted">The best hotel prices on the web.</small></a>
-
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse ml-auto" id="collapsibleNavbar">
                 <ul class="navbar-nav">
                     <li class="nav-item mid">
@@ -65,11 +62,11 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
                         <?php 
-                        if(isset($_SESSION["username"])) {
-                            printf("<a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a>");
-                        } else {
-                            printf("<a class=\"nav-link text-danger\" href=\"/userlog.php\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a>");
-                        }
+                            if(isset($_SESSION["username"])) {
+                                printf("<a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a>");
+                            } else {
+                                printf("<a class=\"nav-link text-danger\" href=\"/userlog.php\"><i class=\"fas fa-sign-in-alt\"></i>&nbsp;Login/Register</a>");
+                            }
                         ?>                    
                     </li>
                 </ul>
@@ -78,117 +75,159 @@
         <div class="container">
             <div class="row row1">
                <div class="reviews col-sm-2">
-                   <h3 class="myfh3 text-center">REVIEWS</h3>
+                   <h5 class="myfh3 text-left">REVIEWS</h5>
                    <Hr class="style-two">
-                    <?php 
+                   <?php 
                         $que = "SELECT reviews.rate, room.name FROM reviews INNER JOIN user on reviews.user_id=user.user_id INNER JOIN room on reviews.room_id=room.room_id WHERE reviews.user_id=" . $_SESSION["userid"];  
                         $reviews = dbquery($que, $conn);
                         //var_dump($reviews);
                         if(empty($reviews)){
                             printf("No Reviews Found");
-                        }else {
+                        } else {
                             ?> <div class="stars"> <?php
                             $num=0;
                             foreach ($reviews as $review) {
                                 $num +=1;
-                                printf("<h5 class=\"my4\">$num. $review[1]<h5>");
+                                printf("<h6 class=\"my4\">$num. $review[1]<h6>");
                                 
                                 for($i=1;$i<=$review[0];$i++) {
                                     printf("<i class=\"fas fa-star checked\"></i>");
-                                    //$checked+=1;
-
                                 }
-                                //echo $checked;
-                                //echo $review[1];
                                 $notChecked = 5 - $review[0];
-                                //echo $notChecked;
                                 if($notChecked !== 0){
                                 for($i=1;$i<=$notChecked;++$i) {
                                     printf("<i class=\"notChecked far fa-star\"></i>");
                                 }
 
                                 }
-                        }
+                            }
                         }
                    
                     ?>
-                    </div>
+
+                   <h5 class="myfh4 text-left">FAVORITES</h5>
+                   <Hr class="style-two">
+                   <?php 
+                        $que2 = "SELECT favorites.status, room.name FROM favorites INNER JOIN room on favorites.room_id=room.room_id WHERE favorites.user_id=" . $_SESSION["userid"];  
+                        $favorites = dbquery($que2, $conn);
+                        if(empty($favorites)){
+                            printf("No Favorites Found");
+                        } else {
+                            $num2=0;
+                            foreach ($favorites as $favorite) {
+                                if($favorite["status"] == 1) {
+                                    $num2+=1;
+                                    ?> 
+                                    <h6 class="my4"><?php echo "<p class='my4'><i  class='fas fa-heart' onclick='addToFavorites()' style='color:orange'></i>&nbsp;</p>" .$favorite["name"];?></h6><br>
+                                    <?php
+                                }
+                            }
+                        }
+                            
+                   
+                    ?>
                 </div>
-                <div class="book col-sm-10">
-                    <h4 class="myh3 text-left">My Bookings</h4>
-                
+            </div>
+            <div class="book col-sm-10">
+                <h5 class="myh3 text-center">MY BOOKINGS</h5>
+                <hr class="style-two">
+                <div id="bookings">
                     <?php 
-                    $que1 = "SELECT bookings.check_in_date, bookings.check_out_date, room.name, room.city, room.area, room.photo, room.room_type, room.price, room.wifi, room.parking, room.pet_friendly, room_type.room_type FROM bookings INNER JOIN room on bookings.room_id=room.room_id INNER JOIN room_type on room.room_type=room_type.id WHERE bookings.user_id=" . $_SESSION["userid"];
-                    $results = dbquery($que1,$conn);
-                    if(!empty($results)) {
-                        foreach ($results as $res) {
-                            ?>
-                            <div class="row">
-                                <div class="col-sm-10">
-                                    <div class='card flex-row flex-wrap'>
-                                                <div class='card-header cheader'>
-                                                    <img class='card-img-right img' src="/assets/<?php echo $res["photo"]?>"  alt="<?php echo $res["photo"]?>"> 
-                                                    <?php 
-                                                        switch ($res["wifi"]){
-                                                            case 1:
-                                                                $hasWifi = '<i class="fas fa-wifi"></i>';
-                                                                break;
-                                                            case 0:
-                                                                $hasWifi = "";
-                                                                break;
-                                                        };
-                                                         switch ($res["parking"]){
-                                                            case 1:
-                                                                $hasParking = '<i class="fas fa-parking"></i>';
-                                                                break;
-                                                            case 0:
-                                                                $hasParking = "";
-                                                                break;
-                                                         };
-                                                        switch ($res["pet_friendly"]){
-                                                            case 1:
-                                                                $receivesPets = '<i class="fas fa-paw"></i>';
-                                                                break;
-                                                            case 0:
-                                                                $receivesPets = "";
-                                                                break;
-                                                        };
-                                            ?>
-                                                
+                        $que1 = "SELECT bookings.check_in_date, bookings.check_out_date, bookings.booking_id, room.name, room.city, room.area, room.photo, room.room_type, room.price, room.wifi, room.parking, room.pet_friendly, room_type.room_type FROM bookings INNER JOIN room on bookings.room_id=room.room_id INNER JOIN room_type on room.room_type=room_type.id WHERE bookings.user_id=" . $_SESSION["userid"];
+                        $results = dbquery($que1,$conn);
+                        if(!empty($results)) {
+                            foreach ($results as $res) {
+                                ?>
+                                <div class="row">
+                                    <div class="col-sm-10 align-self-center info-card">
+                                        <?php 
+                                            switch ($res["wifi"]){
+                                                case 1:
+                                                    $hasWifi = '<i class="fas fa-wifi"></i>';
+                                                    break;
+                                                case 0:
+                                                    $hasWifi = "";
+                                                    break;
+                                            };
+                                            switch ($res["parking"]){
+                                                case 1:
+                                                    $hasParking = '<i class="fas fa-parking"></i>';
+                                                    break;
+                                                case 0:
+                                                    $hasParking = "";
+                                                    break;
+                                            };
+                                            switch ($res["pet_friendly"]){
+                                                case 1:
+                                                    $receivesPets = '<i class="fas fa-paw"></i>';
+                                                    break;
+                                                case 0:
+                                                    $receivesPets = "";
+                                                    break;
+                                            };
+                                        ?>
+                                        <div class="front">
+                                            <img class="card-image" src="/assets/<?php echo $res["photo"]?>"  alt="<?php echo $res["photo"]?>">
+                                            <div class="centered text-center text-uppercase">
+                                                <?php echo $res["name"];?>
+                                            </div>
+                                        </div> 
+                                        <div class="description back">
+                                            <h5 class='hname text-uppercase text-center'><?php echo  $res["name"]?></h5>
+                                            <hr class="style-two">
+                                            <p class='text-center'><?php echo $hasWifi ?> &nbsp; <?php echo $hasParking ?> &nbsp; <?php echo  $receivesPets?></p>
+                                            <p class='p3 text-center'><?php echo $res["city"] ?>
+                                            <p class='p3 text-center'><i class="fas fa-thumbtack"></i> <?php echo $res["area"] ?>
+                                            <div class="footer">
+                                                <p class='price'>Per Night: <?php echo $res["price"]?>€</p>
+                                                <div class="dates">
+                                                    <p class="date"><span>Check-In Date:&nbsp;</span><?php echo $res["check_in_date"];?>&nbsp;|</p>
+                                                    <p class="date"><span>Check-Out Date:&nbsp;</span><?php echo $res["check_out_date"];?>&nbsp;|</p>
+                                                    <p class="date"><span>Type of Room: &nbsp;</span><?php echo $res["room_type"];?></p>
+                                                    <a class="customC2" href="learnmore.php?hname=<?php echo $res["name"]?>&checkin=<?php echo $res["check_in_date"]?>&checkout=<?php echo $res["check_out_date"]?>">Learn More</a>
+                                                    <input type="hidden" id="bookingid<?php echo $res["booking_id"]?>" value="<?php echo $res["booking_id"]?>">
+                                                    <button class="customC" type="submit" id="btn-submit<?php echo $res["booking_id"]?>" onclick="deleteRecord(this.id);">Cancel Booking</button>
                                                 </div>
-                                                <div class='card-block cbody'>
-                                                <h5 class='card-title'><?php echo  $res["name"]?></h5>
-                                                <p class='card-text'><?php echo $hasWifi ?> &nbsp; <?php echo $hasParking ?> &nbsp; <?php echo  $receivesPets?></p>
-                                                <p class='card-text p3'>Price: <?php echo $res[7]?>€</p>
-                                                <p class='card-text p3'>Area: <?php echo $res["area"] ?>
-                                            </div>
-                                            <div class="card-footer w-100">
-                                                <p class="date"><span>Check-In Date:&nbsp;</span><?php echo $res["check_in_date"];?>&nbsp;|</p>
-                                                <p class="date"><span>Check-Out Date:&nbsp;</span><?php echo $res["check_out_date"];?>&nbsp;|</p>
-                                                <p class="tor"><span>Type of Room: &nbsp;</span><?php echo $res["room_type"];?></p>
-                                                <a class="customC" href="learnmore.php?hname=<?php echo $res["name"]?>&checkin=<?php echo $res["check_in_date"]?>&checkout=<?php echo $res["check_out_date"]?>">Learn More</a>
-                                            </div>
+                                            </div> 
                                         </div>
                                     </div>
                                 </div>
-                                <br><br>
-                              <?php  
+                                <?php  
 
-                        } 
-                    } else {
-                    ?>
-                        <p>Results Not Found</p>
-                        <?php
-                    }
-                    ?>
+                            } 
+                        } else {
+                            ?>
+                                <div class="alert alert-danger resnotfound text-uppercase">Results not found</div>
+                            <?php
+                        }
+                        ?>
+                    </div>    
                 </div>
             </div>
         </div>
         <footer class="footer">
-               <div class="col-sm-12">
-               <Hr class="style-two">
+            <div class="col-sm-12">
+                <Hr class="style-two">
                 <p class="text-center" style="color:#dc3545;">Coded by George Charitidis</p>
+            </div>
+        </footer>
+        <div class="modal fade" id="modalCanceled" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalCanceledLabel">Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Your booking was canceled successfully
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
-            </footer>
+            </div>
+        </div>
     </body>
 </html>

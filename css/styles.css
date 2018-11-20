@@ -75,3 +75,10 @@ body{
 .ui-datepicker-year{
     color:#dc3545;
 }
+.resnotfound { 
+    margin:10% 20%;
+    width:50%;
+    text-align:center;
+
+
+}

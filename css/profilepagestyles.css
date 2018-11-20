@@ -1,22 +1,28 @@
 .myh3 { 
-    color:#ffffff;
-    background-color:#dc3545;
-    width:83%;
+    color:#dc3545;
+    width:87%;
     border-radius:2px;
-    padding:0.7%;
+    padding:2% 3%;
 
 
 }
+.my4 {
+    display:inline;
+}
 .myfh3 {
     color:#dc3545;
-    font-size:1.35em;
+
+}
+.myfh4 {
+    color:#dc3545;
+    margin-top:20%;
 }
 .row1{ 
     margin-top:5%;
 
 }
-.reviews {    
-    
+.reviews{
+    padding:1%;
 }
 .checked {
     color:orange;
@@ -29,66 +35,111 @@
     border-right:2px solid #dc3545;
     padding-top:1%;
 }
-.my4 {
-    
-}
+
 hr.style-two {
     border: 0;
     height: 1px;
     background-image: linear-gradient(to right, rgba(220,53,69,0), rgba(220,53,69,0.75), rgba(220,53,69,0));
 }
-.cheader {
-    width:20%;
-    height:15vh;
-    background-color:#ffffff;
-    position:relative;
-    border-spacing:20px;
-    
-}
-
-.img{
-    position:absolute;
-    left:0%;
-    top:0%;
-    width:100%;
-    height:100%;
-}
-.cbody {
-    width:50%;
-    position:Relative;
-    left:1%;
-    padding:2%;    
-}
-.card{
-    
-    position:relative;
-    top:2.2%;
-}
-.card-footer{
-    height:10%;
-}
 .customC{
+    background-color:transparent;
     color:#dc3545;
     float:right;
-    width:auto;
+    width:20%;
     border:1px solid #dc3545;
     border-radius:5px;
-    padding:1%
+    padding:1%;
+    display:inline-block;
+}
+.customC2{
+    color:#dc3545;
+    float:left;
+    width:20%;
+    border:1px solid #dc3545;
+    border-radius:5px;
+    padding:1%;
+    display:inline-block;
 }
 .customC:hover {
     color:#dc3545;
     text-decoration:none;
 }
-.p3 {
-    font-size:1.10em;
-    color: #dc3545;
-    font-weight:600;
+.customC2:hover {
+    color:#dc3545;
+    text-decoration:none;
 }
+
 .date {
     display: inline-block;
     font-size:0.9em;
+    padding-top: 1%;
+    
 }
-.tor{
-    font-size:0.9em;
-    display:inline-block;
+.dates { 
+    text-align: center;
+    
 }
+.info-card {
+    float: left;
+    margin: 10px;
+    width:100%;
+	-webkit-perspective: 600px;
+}
+
+.front, .back {
+	background: #FFF;
+	border-radius: 10px;
+	transition: -webkit-transform 1s;
+	-webkit-transform-style: preserve-3d;
+	-webkit-backface-visibility: hidden;
+	border: 1px solid black;
+}
+
+.front {
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 1;
+}
+
+.back {
+	padding: 6%;
+	width: 100%;
+	height: 100%;
+	-webkit-transform: rotateY(-180deg);
+	overflow: auto;
+}
+
+.info-card:hover .back {
+	-webkit-transform: rotateY(0);
+}
+
+.info-card:hover .front {
+	-webkit-transform: rotateY(180deg);
+}
+.card-image {
+    width: 100%;
+    height: 100%;
+    }
+.centered {
+        position: absolute;
+        top:8%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color:#ffffff;
+        background-color:rgba(0,0,0,0.4);
+        width: 50%;
+        padding-top:6%;
+        padding-bottom:3%;
+        font-size: 1.10em;
+        font-family: sans-serif;
+        letter-spacing: 0.7em;
+        
+    }
+.price {
+        font-size:0.9em;
+        color:black;
+        text-align:center;
+       
+    }
