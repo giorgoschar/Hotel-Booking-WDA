@@ -59,6 +59,7 @@
                 <ul class="navbar-nav ml-auto">
                     <div  id="username">
                         <?php 
+                        //Check if user is logged in and add the right elements on the navbar
                             if(isset($_SESSION["username"])) {
                                 printf("<li class=\"nav-item\"><a class=\"nav-link text-danger\" href=\"/profilepage.php\"><i class=\"fas fa-user\"></i>&nbsp;".$_SESSION["username"] . "</a></li><li class=\"nav-item\"> <a class=\"nav-link text-danger\" href=\"/logout.php?page=index.php\"><i class=\"fas fa-sign-out-alt\"></i>&nbsp;Logout</a></li>");
                             } else {
@@ -71,9 +72,11 @@
         </nav>
         <?php 
             if(empty($_SESSION["username"])) {
+                //If user is not logged in then include the login_register file that include the forms.
                 include_once "login_register.php";
             }
-            if(isset($_GET["page"])) {#
+            //show need to login modal, if user is logged out and tries to access pages like favorites.php or booknow.php etc.
+            if(isset($_GET["page"])) {
                 $page = mysqli_real_escape_string($conn,$_GET["page"]);
                 if ($page=="profile") {
                 ?>
@@ -102,6 +105,7 @@
             <div class="row">  
                 <div class="vertical-center">
                     <div class="col-md-4 col-sm-4 col-xs-12">
+                       <!-- Form for the hotel search -->
                         <form class="roomSearch" id="roomSearch" method="GET" action="hotels.php">
                         <fieldset>
                             <legend>Room Search:</legend>

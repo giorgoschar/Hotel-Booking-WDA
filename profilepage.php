@@ -66,6 +66,7 @@
                    <h5 class="myfh3 text-left">REVIEWS</h5>
                    <Hr class="style-two">
                    <?php 
+                        //Printing reviews on the sideBar
                         $que = "SELECT reviews.rate, room.name FROM reviews INNER JOIN user on reviews.user_id=user.user_id INNER JOIN room on reviews.room_id=room.room_id WHERE reviews.user_id=" . $_SESSION["userid"];  
                         $reviews = dbquery($que, $conn);
                         //var_dump($reviews);
@@ -95,6 +96,7 @@
                    <h5 class="myfh4 text-left">FAVORITES</h5>
                    <Hr class="style-two">
                    <?php 
+                        //Printing favorites on the sideBar
                         $que2 = "SELECT favorites.status, room.name FROM favorites INNER JOIN room on favorites.room_id=room.room_id WHERE favorites.user_id=" . $_SESSION["userid"];  
                         $favorites = dbquery($que2, $conn);
                         if(empty($favorites)){
@@ -121,6 +123,7 @@
                 <hr class="style-two">
                 <div id="bookings">
                     <?php 
+                        //Printing Bookings on the main page
                         $que1 = "SELECT bookings.check_in_date, bookings.check_out_date, bookings.booking_id, room.name, room.city, room.area, room.photo, room.room_type, room.price, room.wifi, room.parking, room.pet_friendly, room_type.room_type FROM bookings INNER JOIN room on bookings.room_id=room.room_id INNER JOIN room_type on room.room_type=room_type.id WHERE bookings.user_id=" . $_SESSION["userid"];
                         $results = dbquery($que1,$conn);
                         if(!empty($results)) {

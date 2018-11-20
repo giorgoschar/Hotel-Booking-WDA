@@ -1,4 +1,5 @@
 <?php 
+    //creating a form token.
     $token = md5(rand(20,25));
     $_SESSION["token"] = $token;
 

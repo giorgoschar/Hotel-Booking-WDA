@@ -3,10 +3,12 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
     include_once "dbconn.php";
+    //Sending user to index.php if he is not logged in.
     if(!isset($_POST["userid"])){
         header("Location:index.php");
     }
     elseif($_POST['userid']==0 || empty($_POST['userid'])) {
+        //exit message used to define results for ajax.
         echo "exit";
         exit();
     } else {
@@ -16,7 +18,7 @@
         $roomid = mysqli_real_escape_string($conn,$_POST['roomid']);
     }
     $ok = true;
-
+    //Review Validation
     if ( !isset($rating) || empty($rating) ) {
         $ok = false;
         echo $ok;
@@ -40,6 +42,7 @@
             if(empty($reviews)){
                 echo "No Reviews Found";
             }else {
+            //printing reviews and stars.
             $t=1;
             foreach ($reviews as $review) {
                 printf("<span>$t." . $review[6]."&nbsp;<span>");

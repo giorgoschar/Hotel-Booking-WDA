@@ -17,7 +17,7 @@
             echo false;
             //echo "Error deleting record: " . $conn->error;
         }
-    
+    //After the selected booking was removed, we print the remaining ones ( if they exist )
     $que1 = "SELECT bookings.check_in_date, bookings.check_out_date, bookings.booking_id, room.name, room.city, room.area, room.photo, room.room_type, room.price, room.wifi, room.parking, room.pet_friendly, room_type.room_type FROM bookings INNER JOIN room on bookings.room_id=room.room_id INNER JOIN room_type on room.room_type=room_type.id WHERE bookings.user_id=" . $_SESSION["userid"];
     $results = dbquery($que1,$conn);
     if(!empty($results)) {

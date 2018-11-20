@@ -29,7 +29,7 @@
     } elseif ($_POST["maxprice"] == 0) {
         $maxprice = 0;
     }
-    //Filter and get results
+    //Filter and get results (city dependant)
     if(!empty($city)) {
         if($roomtype == [] && $maxprice !== 0) {
             $que2 = "SELECT * FROM room WHERE city='$city' AND price < '$maxprice'";
@@ -48,12 +48,14 @@
             $que3 = "SELECT MAX(price) AS maxPrice FROM room WHERE city='$city' AND room_type in ({$roomtypestr})";
         }      
     } else {
+        //if no city chosen, just use maxPrice to show results: 
         $que3 = "SELECT MAX(price) AS maxPrice FROM room";
         $que2 = "SELECT * FROM room";
         }
         $results = dbquery($que2,$conn);
         $maxPrice = dbquery($que3, $conn);
         if(!empty($results)) {
+            //print each result
             foreach ($results as $res) {
                 $checkDateBool = FALSE;
                 $bookingque = "SELECT bookings.check_in_date, bookings.check_out_date FROM bookings WHERE room_id=".$res[0];
@@ -64,10 +66,6 @@
                     foreach ($bookingsql as $booking) {
                         $bookedindate= strtotime($booking["check_in_date"]);
                         $bookedoutdate = strtotime($booking["check_out_date"]);
-                              //echo $indate . "<br>";
-                             //echo $bookedindate . "<br>";
-                              //echo $outdate . "<br>";
-                              //echo $bookedoutdate . "<br>";
                         if($indate == $bookedindate || $outdate == $bookedoutdate) {
                             $checkDateBool =TRUE;
                             break;
@@ -82,6 +80,7 @@
                         }
                     }
                 }
+                //Room availability check:
                 if($checkDateBool == FALSE) {
                     $availability = "<span class=\"alert alert-success availability\">Available</span>";
                 } else {

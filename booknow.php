@@ -21,6 +21,7 @@
     $checkinDateArr = explode('-',$checkin);
     $checkoutDateArr = explode('-',$checkout);
     $checkDateBool = FALSE;
+    //Validating and checking check-in and check-out dates. If they exist on the database for the particular room the user cant book it.
     if(count($checkinDateArr) == 3 && count($checkoutDateArr) == 3) {
         if(checkdate($checkinDateArr[1],$checkinDateArr[2], $checkinDateArr[0]) && checkdate($checkoutDateArr[1],$checkoutDateArr[2],$checkoutDateArr[0])) {
             $indate = strtotime($checkin);
@@ -44,6 +45,7 @@
             }
         }
     }
+        //If both dates and all dates between are ok, insert the booking into the database.
         if($checkDateBool == FALSE) {
                 $que = "INSERT INTO bookings (check_in_date, check_out_date, user_id, room_id) VALUES ('$checkin', '$checkout', $userid, $room)";
                 if ($conn->query($que) === FALSE) {

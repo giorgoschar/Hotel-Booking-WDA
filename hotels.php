@@ -81,6 +81,7 @@
                     <nav id="collapsibleSideNav" class="collapse sidenav">
                         <p class="text-left ptitl">FILTERS</p>  
                         <form id="filterForm" class="filterForm" method="post">
+                        <!--Create Filters sideNav-->
                             <fieldset>   
                                 <legend>City:</legend>
                                     <?php 
@@ -178,6 +179,7 @@
                 <div class="col-sm-9">
                     <h4 class="text-center htitl">RESULTS</h4>
                     <div id="resultsPrinted">
+                    <!--Print Resuts-->
                         <?php
                             if(!empty($results)) {
                                 $checkDateBool = FALSE;

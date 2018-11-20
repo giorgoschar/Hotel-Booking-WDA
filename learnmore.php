@@ -45,16 +45,22 @@
         <link rel="stylesheet" href="/css/styles.css">
         <link rel="stylesheet" href="/css/learnmorestyles.css">
         <script>
-            <?php if(isset($_SESSION["userid"]) && isset($_SESSION["username"])) { ?>
-               var userid = <?php echo $_SESSION["userid"];?>;
-            <?php } else { ?>
-                var userid=0;
-            <?php } ?>
+            <?php 
+            //if userid and username are set then create a variable user id for javascript to use in AJAX
+                if(isset($_SESSION["userid"]) && isset($_SESSION["username"])) { ?>
+                   var userid = <?php echo $_SESSION["userid"];?>;
+            <?php
+                } else { ?>
+                    var userid=0;
+            <?php 
+                } 
+            ?>
         </script>
         <script src="js/script.js" async defer ></script>
         <script src="js/learnmore.js"></script>
 
         <style>
+            /*styling for google maps*/
           #map {
             height:50% !important;
             margin-top:2% !important;
@@ -97,14 +103,13 @@
             <div class="row">
                 <div class="title col-sm-8">
                     <?php 
-                        //getting Hotel Name from the link and printing on the title as well as getting all info on the room.
+                        //Validating that user came with a hotel name and that the hotel name exists on the database
                         $hnameBool = TRUE;
                         if(empty($_GET["hname"])){
                            $hnameBool=FALSE;
                         } else { 
                             $quer = "SELECT name FROM room";
                             $hotelnames = dbquery($quer,$conn);
-                            // var_dump($hotelnames);
                             foreach ($hotelnames as $hotelname) { 
                                 if ($hotelname[0] === $_GET["hname"]) {
                                     $hnameBool = TRUE;
@@ -114,6 +119,7 @@
                                 }
                             }
                         }
+                        //getting Hotel Name from the link and printing on the title as well as getting all info on the room.
                         if($hnameBool === TRUE){
                             if(empty($_SESSION["username"])) {
                                 include_once "login_register.php";
